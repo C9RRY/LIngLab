@@ -1,18 +1,26 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from lessons_choice import Ui_LessonChoice
+from vocabulary import Ui_Vocabulary
+from translate import Ui_Translate
+from database import get_user_info
 
 
 class Ui_MainWindow(object):
-    def openLessonChoice(self):
-        self.window2 = QtWidgets.QMainWindow()
-        self.ui = Ui_LessonChoice()
-        self.ui.setupUi(self.window2)
-        self.window2.show()
+    def open_new_windows(self, ui_name):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = ui_name
+        self.ui.setupUi(self.window, MainWindow, self.user)
+        MainWindow.hide()
+        self.window.show()
+        # MainWindow.hide()
+
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(500, 450)
         MainWindow.setStyleSheet("background-color: rgb(53, 132, 228);")
+        self.user = 1
+        self.user_info = get_user_info(self.user)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -33,12 +41,21 @@ class Ui_MainWindow(object):
         self.profileOpenButton.setMinimumSize(QtCore.QSize(80, 30))
         self.profileOpenButton.setMaximumSize(QtCore.QSize(100, 30))
         self.profileOpenButton.setObjectName("profileOpenButton")
-        self.gridLayout_2.addWidget(self.profileOpenButton, 1, 2, 1, 1)
+        self.gridLayout_2.addWidget(self.profileOpenButton, 1, 4, 1, 1)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem2, 1, 1, 1, 1)
+        self.gridLayout_2.addItem(spacerItem2, 1, 3, 1, 1)
         spacerItem3 = QtWidgets.QSpacerItem(20, 58, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem3, 1, 0, 1, 1)
+        self.gridLayout_2.addItem(spacerItem3, 1, 1, 1, 1)
+        self.user_info_label = QtWidgets.QLabel(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setItalic(True)
+        self.user_info_label.setFont(font)
+        self.user_info_label.setObjectName("user_info_label")
+        self.gridLayout_2.addWidget(self.user_info_label, 1, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_2, 0, 2, 1, 3)
+        spacerItem4 = QtWidgets.QSpacerItem(25, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem4, 1, 4, 1, 1)
         self.gridLayout_3 = QtWidgets.QGridLayout()
         self.gridLayout_3.setSizeConstraint(QtWidgets.QLayout.SetMinAndMaxSize)
         self.gridLayout_3.setObjectName("gridLayout_3")
@@ -62,7 +79,8 @@ class Ui_MainWindow(object):
         self.blindPrintOpenButton.setStyleSheet("background-color: rgb(87, 227, 137);")
         self.blindPrintOpenButton.setObjectName("blindPrintOpenButton")
         self.gridLayout_3.addWidget(self.blindPrintOpenButton, 2, 0, 1, 1)
-        self.wokabularyOpenButton = QtWidgets.QPushButton(self.centralwidget)
+        self.wokabularyOpenButton = QtWidgets.QPushButton(self.centralwidget,
+                                                          clicked=lambda: self.open_new_windows(Ui_Vocabulary()))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -72,8 +90,8 @@ class Ui_MainWindow(object):
         self.wokabularyOpenButton.setStyleSheet("background-color: rgb(143, 240, 164);")
         self.wokabularyOpenButton.setObjectName("wokabularyOpenButton")
         self.gridLayout_3.addWidget(self.wokabularyOpenButton, 0, 0, 1, 1)
-        self.lessonChoiceOpenButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda: self.openLessonChoice())
-        self.lessonChoiceOpenButton.clicked.connect(MainWindow.close)
+        self.lessonChoiceOpenButton = QtWidgets.QPushButton(self.centralwidget,
+                                                            clicked=lambda: self.open_new_windows(Ui_LessonChoice()))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -110,6 +128,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MyLearn"))
         self.profileOpenButton.setText(_translate("MainWindow", "Profile"))
+        self.user_info_label.setText(_translate("MainWindow", "Ілля"))
         self.grammarOpenButton.setText(_translate("MainWindow", "Grammar"))
         self.blindPrintOpenButton.setText(_translate("MainWindow", "Blind print"))
         self.wokabularyOpenButton.setText(_translate("MainWindow", "Wokabulary"))

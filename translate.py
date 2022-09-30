@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+import time
 
-# Form implementation generated from reading ui file 'translate.ui'
+# Form implementation generated from reading ui file 'PyQt_files/translate.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -9,12 +10,19 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from utils import Timerthread
 
 
 class Ui_Translate(object):
-    def setupUi(self, Translate):
+
+    def show_main(self, main_window, current_window):
+        main_window.show()
+        current_window.close()
+
+    def setupUi(self, Translate, LessonChoice):
+        self.new_word = 1
         Translate.setObjectName("Translate")
-        Translate.resize(500, 450)
+        Translate.resize(671, 534)
         Translate.setStyleSheet("background-color: rgb(98, 160, 234);")
         self.centralwidget = QtWidgets.QWidget(Translate)
         self.centralwidget.setObjectName("centralwidget")
@@ -22,7 +30,8 @@ class Ui_Translate(object):
         self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
-        self.MicrofoneToolButton = QtWidgets.QToolButton(self.centralwidget)
+        self.MicrofoneToolButton = QtWidgets.QToolButton(self.centralwidget,
+                                                         clicked=lambda: self.show_main(LessonChoice,Translate))
         self.MicrofoneToolButton.setObjectName("MicrofoneToolButton")
         self.verticalLayout.addWidget(self.MicrofoneToolButton)
         spacerItem = QtWidgets.QSpacerItem(25, 9, QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum)
@@ -66,6 +75,7 @@ class Ui_Translate(object):
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.thirdWord.sizePolicy().hasHeightForWidth())
+
         self.thirdWord.setSizePolicy(sizePolicy)
         self.thirdWord.setMaximumSize(QtCore.QSize(700, 60))
         self.thirdWord.setStyleSheet("background-color: rgb(246, 211, 45);")
@@ -105,6 +115,8 @@ class Ui_Translate(object):
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setContentsMargins(-1, 1, -1, -1)
         self.gridLayout_2.setObjectName("gridLayout_2")
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_2.addItem(spacerItem3, 2, 2, 1, 1)
         self.profileOpenButton = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -114,11 +126,15 @@ class Ui_Translate(object):
         self.profileOpenButton.setMinimumSize(QtCore.QSize(80, 30))
         self.profileOpenButton.setMaximumSize(QtCore.QSize(100, 30))
         self.profileOpenButton.setObjectName("profileOpenButton")
-        self.gridLayout_2.addWidget(self.profileOpenButton, 1, 2, 1, 1)
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem3, 1, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.profileOpenButton, 2, 4, 1, 1)
         spacerItem4 = QtWidgets.QSpacerItem(20, 58, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem4, 1, 0, 1, 1)
+        self.gridLayout_2.addItem(spacerItem4, 2, 0, 1, 1)
+        self.start_time = 5
+        self.lcdNumber = QtWidgets.QLCDNumber(self.centralwidget)
+        self.lcdNumber.setMinimumSize(QtCore.QSize(100, 50))
+        self.lcdNumber.setProperty("intValue", 5)
+        self.lcdNumber.setObjectName("lcdNumber")
+        self.gridLayout_2.addWidget(self.lcdNumber, 2, 1, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_2, 0, 1, 1, 5)
         self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
@@ -129,16 +145,37 @@ class Ui_Translate(object):
         self.graphicsView.setMaximumSize(QtCore.QSize(100, 100))
         self.graphicsView.setObjectName("graphicsView")
         self.gridLayout.addWidget(self.graphicsView, 1, 5, 1, 1)
+
         Translate.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Translate)
         QtCore.QMetaObject.connectSlotsByName(Translate)
 
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.updateLCD)
+        self.timer.start(1000)
+
+    def timer_lcd(self):
+        if self.start_time != 0:
+            self.start_time -= 1
+        else:
+            self.new_word += 1
+            self.fourthWord.setText(str(self.new_word))
+            self.word2Translate.setStyleSheet("background-color: red")
+            self.timer.stop()
+
+    def updateLCD(self):
+        self.timer_lcd()
+        self.lcdNumber.display(self.start_time)
+
+
+
+
     def retranslateUi(self, Translate):
         _translate = QtCore.QCoreApplication.translate
         Translate.setWindowTitle(_translate("Translate", "Translate"))
         self.MicrofoneToolButton.setText(_translate("Translate", "..."))
-        self.fifthWord.setText(_translate("Translate", "fifth_word"))
+        self.fifthWord.setText(_translate("Translate", str(self.new_word)))
         self.fourthWord.setText(_translate("Translate", "fourth_word"))
         self.firstWord.setText(_translate("Translate", "first_word"))
         self.thirdWord.setText(_translate("Translate", "third_word"))

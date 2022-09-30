@@ -1,15 +1,22 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from translate import Ui_Translate
+import time
 
 
 class Ui_LessonChoice(object):
-    def openTranslate(self):
-        self.window2 = QtWidgets.QMainWindow()
-        self.ui = Ui_Translate()
-        self.ui.setupUi(self.window2)
-        self.window2.show()
+    def show_main(self, main_window, current_window):
+        main_window.show()
+        current_window.hide()
 
-    def setupUi(self, LessonChoice):
+    def openTranslate(self, ui_name, lesson_choice):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = ui_name
+        self.ui.setupUi(self.window, lesson_choice)
+        lesson_choice.hide()
+        self.window.show()
+
+    def setupUi(self, LessonChoice, MainWindow, user):
+        self.user = user
         LessonChoice.setObjectName("LessonChoice")
         LessonChoice.resize(500, 450)
         LessonChoice.setStyleSheet("background-color: rgb(53, 132, 228);")
@@ -42,8 +49,8 @@ class Ui_LessonChoice(object):
         self.pronounceOpenButton.setStyleSheet("background-color: rgb(192, 97, 203);")
         self.pronounceOpenButton.setObjectName("pronounceOpenButton")
         self.gridLayout_3.addWidget(self.pronounceOpenButton, 2, 0, 1, 1)
-        self.translateOpenButton = QtWidgets.QPushButton(self.centralwidget, clicked=lambda: self.openTranslate())
-        self.translateOpenButton.clicked.connect(LessonChoice.close)
+        self.translateOpenButton = QtWidgets.QPushButton(self.centralwidget,
+                                                         clicked=lambda: self.openTranslate(Ui_Translate(), LessonChoice))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -63,7 +70,8 @@ class Ui_LessonChoice(object):
         self.hearMeOpenButton.setStyleSheet("background-color: rgb(145, 65, 172);")
         self.hearMeOpenButton.setObjectName("hearMeOpenButton")
         self.gridLayout_3.addWidget(self.hearMeOpenButton, 3, 0, 1, 1)
-        self.passedButton = QtWidgets.QPushButton(self.centralwidget)
+        self.passedButton = QtWidgets.QPushButton(self.centralwidget,
+                                                  clicked=lambda: self.show_main(MainWindow, LessonChoice))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
