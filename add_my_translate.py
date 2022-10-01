@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from database import save_to_dict
+from database import save_to_dict_and_vocab
 
 
 class Ui_add_my_translate(object):
@@ -40,7 +40,7 @@ class Ui_add_my_translate(object):
         QtCore.QMetaObject.connectSlotsByName(add_my_translate)
 
     def save_my_variant(self, add_my_translate):
-        save_to_dict(self.user, self.word, self.lineEdit.text())
+        save_to_dict_and_vocab(self.user, self.word, self.lineEdit.text())
         self.insert_into()
 
     def retranslateUi(self, add_my_translate):

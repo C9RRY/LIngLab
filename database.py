@@ -54,13 +54,22 @@ def add_word_to_user(user_id, word_id):
     conn.commit()
 
 
-def save_to_dict(user_id, word, translate):
+def save_to_dict(word, translate):
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
-
-    cursor.execute(f"INSERT INTO dictionary(word, translation) "
-                   f"VALUES ('{word}', '{translate}')")
+    try:
+        cursor.execute(f"INSERT INTO dictionary(word, translation) "
+                       f"VALUES ('{word}', '{translate}')")
+    except:
+        print('except in cursor')
+        cursor.execute(f'INSERT INTO dictionary(word, translation) '
+                       f'VALUES ("{word}", "{translate}")')
     conn.commit()
+
+
+def save_to_dict_and_vocab(user_id, word, translate):
+    save_to_dict(word, translate)
+    conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     res = cursor.execute(f"SELECT id FROM dictionary "
                          f"WHERE translation = '{translate}'")
@@ -96,5 +105,5 @@ def delete_from_vocab(translation, user):
 
 
 if __name__ == "__main__":
-    save_to_dict(1, "home", 'lsfasf')
+    save_to_dict_and_vocab(1, "home", 'lsfasf')
 
