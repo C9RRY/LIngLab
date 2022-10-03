@@ -121,7 +121,7 @@ class Ui_LessonChoice(object):
         self.pronounceOpenButton.setText(_translate("LessonChoice", "Pronounce"))
         self.translateOpenButton.setText(_translate("LessonChoice", "Translate "))
         self.hearMeOpenButton.setText(_translate("LessonChoice", "Do you hear me?"))
-        self.passedButton.setText(_translate("LessonChoice", "Pass"))
+        self.passedButton.setText(_translate("LessonChoice", "Back"))
         self.profileOpenButton.setText(_translate("LessonChoice", "Profile"))
 
 

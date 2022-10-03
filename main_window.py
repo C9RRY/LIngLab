@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from lessons_choice import Ui_LessonChoice
 from vocabulary import Ui_Vocabulary
-from translate import Ui_Translate
+from blind_print import Ui_BlindPrint
 from database import get_user_info
 
 
@@ -14,13 +14,12 @@ class Ui_MainWindow(object):
         self.window.show()
         # MainWindow.hide()
 
-
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(500, 450)
         MainWindow.setStyleSheet("background-color: rgb(53, 132, 228);")
         self.user = 1
-        self.user_info = get_user_info(self.user)
+        # self.user_info = get_user_info(self.user)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -69,7 +68,8 @@ class Ui_MainWindow(object):
         self.grammarOpenButton.setStyleSheet("background-color: rgb(46, 194, 126);")
         self.grammarOpenButton.setObjectName("grammarOpenButton")
         self.gridLayout_3.addWidget(self.grammarOpenButton, 4, 0, 1, 1)
-        self.blindPrintOpenButton = QtWidgets.QPushButton(self.centralwidget)
+        self.blindPrintOpenButton = QtWidgets.QPushButton(self.centralwidget,
+                                                          clicked=lambda: self.open_new_windows(Ui_BlindPrint()))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -137,7 +137,10 @@ class Ui_MainWindow(object):
 
 
 if __name__ == "__main__":
+    from models import create_all
     import sys
+
+    create_all()
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()

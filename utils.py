@@ -22,7 +22,7 @@ def dictionary_updater(text):
     word_list = text.split(' ')
     word_list = set(word_list)
     for word in word_list:
-        word = word.lower()
+        # word = word.lower()
         try:
             translated = translate(word)
             print(word, translated)
@@ -67,8 +67,8 @@ def current_word(current_position, text):
     return word.lower()
 
 
-def open_text_file(current_position):
-    with open('Blind_print/Books/test_dock2.txt') as work_text:
+def open_text_file(file_path):
+    with open(file_path) as work_text:
         text = work_text.read()
         print("text extracted")
         return text

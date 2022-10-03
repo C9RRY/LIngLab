@@ -1,17 +1,31 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from new_thread import KeyboardThread
 from utils import open_text_file, current_word, get_and_play_audio
+from blind_print_options import Ui_BlindPrintSettings
 
 
 class Ui_BlindPrint(object):
-    def setupUi(self, BlindPrint):
+    def show_main(self, main_window, current_window):
+        main_window.show()
+        current_window.hide()
+
+    def open_new_windows(self, ui_name, BlindPrint, get_text):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = ui_name
+        self.ui.setupUi(self.window, BlindPrint, get_text, self.user)
+        self.window.show()
+        # MainWindow.hide()
+
+    def setupUi(self, BlindPrint, MainWindow, user):
+        self.BlindPrint = BlindPrint
         self.current_position = 4000
-        self.print_text = open_text_file(self.current_position)
+
+        self.print_text = 'START'
         self.current_word = ' '
         self.timer = QtCore.QTimer()
         # self.timer.timeout.connect(self.print_key)
         self.thread = KeyboardThread
-
+        self.user = user
         BlindPrint.setObjectName("BlindPrint")
         BlindPrint.resize(818, 458)
         BlindPrint.setStyleSheet("background-color: rgb(102, 111, 108);")
@@ -29,7 +43,8 @@ class Ui_BlindPrint(object):
         self.gridLayout.addWidget(self.label_2, 9, 9, 1, 4)
         spacerItem = QtWidgets.QSpacerItem(5, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 12, 8, 1, 1)
-        self.push_button_back = QtWidgets.QPushButton(self.centralwidget)
+        self.push_button_back = QtWidgets.QPushButton(self.centralwidget,
+                                                  clicked=lambda: self.show_main(MainWindow, BlindPrint))
         self.push_button_back.setStyleSheet("background-color: rgb(181, 131, 90);")
         self.push_button_back.setObjectName("push_button_back")
         self.gridLayout.addWidget(self.push_button_back, 13, 12, 1, 1)
@@ -79,7 +94,9 @@ class Ui_BlindPrint(object):
         self.gridLayout_2.addWidget(self.lcdNumber_2, 1, 8, 1, 1)
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem7, 1, 6, 1, 1)
-        self.tool_button = QtWidgets.QToolButton(self.centralwidget)
+        self.tool_button = QtWidgets.QToolButton(self.centralwidget,
+                                                 clicked=lambda: self.open_new_windows(
+                                                     Ui_BlindPrintSettings(), BlindPrint, self.get_text))
         self.tool_button.setStyleSheet("background-color: rgb(181, 131, 90);")
         self.tool_button.setObjectName("tool_button")
         self.gridLayout_2.addWidget(self.tool_button, 1, 11, 1, 1)
@@ -139,10 +156,14 @@ class Ui_BlindPrint(object):
             self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + 35])
             self.current_position += 1
             self.current_word = current_word(self.current_position, self.print_text)
+                                 #current position
+    def get_text(self, path, BlindPrint):
+        is self.current_position
+        self.print_text = open_text_file(path)[self.current_position - 30:]
+        self.retranslateUi(BlindPrint)
 
     def pronounce(self):
         get_and_play_audio(self.current_word)
-
 
 
 if __name__ == "__main__":

@@ -8,10 +8,9 @@ def create_user():
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE users( "
-                   "id serial NOT NULL, "
-                   "user_name varchar(50) UNIQUE, "
-                   "password varchar(50), "
-                   "PRIMARY KEY (id))")
+                   "id INTEGER PRIMARY KEY, "
+                   "user_name VARCHAR(50) UNIQUE, "
+                   "password VARCHAR(50))")
     conn.commit()
 
 
@@ -19,9 +18,10 @@ def create_dictionary():
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE dictionary( "
-                   "id serial PRIMARY KEY NOT NULL, "
+                   "id INTEGER PRIMARY KEY , "
                    "word VARCHAR(250), "
-                   "translation VARCHAR(250) NOT NULL UNIQUE, "
+                   "translation VARCHAR(250) NOT NULL UNIQUE,"
+                   "collection VARCHAR(50), "
                    "pronounce FILEFIELD) ")
     conn.commit()
 
@@ -30,7 +30,7 @@ def create_vocabulary():
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE vocabulary( "
-                   "id serial PRIMARY KEY NOT NULL, "
+                   "id INTEGER PRIMARY KEY, "
                    "user_id INTEGER, "
                    "word_id INTEGER, "
                    "progress VARCHAR(10) DEFAULT '*', "
@@ -43,7 +43,14 @@ def create_vocabulary():
     conn.commit()
 
 
+def create_all():
+    try:
+        create_user()
+        create_dictionary()
+        create_vocabulary()
+    except:
+        pass
+
+
 if __name__ == "__main__":
-    create_user()
-    create_dictionary()
-    create_vocabulary()
+    create_all()

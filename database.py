@@ -60,8 +60,8 @@ def save_to_dict(word, translate):
     try:
         cursor.execute(f"INSERT INTO dictionary(word, translation) "
                        f"VALUES ('{word}', '{translate}')")
-    except:
-        print('except in cursor')
+    except Exception as exc:
+        print(f'except in cursor {exc}')
         cursor.execute(f'INSERT INTO dictionary(word, translation) '
                        f'VALUES ("{word}", "{translate}")')
     conn.commit()
