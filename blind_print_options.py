@@ -2,8 +2,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_BlindPrintSettings(object):
-    def setupUi(self, BlindPrintSettings, BlindPrint, get_text, user):
+    def setupUi(self, BlindPrintSettings, BlindPrint, get_text, font_change, user):
+        self.font_change = font_change
         self.get_text = get_text
+        self.file_path = None
         BlindPrintSettings.setObjectName("BlindPrintSettings")
         BlindPrintSettings.resize(352, 464)
         BlindPrintSettings.setStyleSheet("background-color: rgb(102, 111, 108);")
@@ -42,6 +44,7 @@ class Ui_BlindPrintSettings(object):
         self.radioButton_2.setGeometry(QtCore.QRect(170, 170, 141, 25))
         self.radioButton_2.setObjectName("radioButton_2")
         self.radioButton_3 = QtWidgets.QRadioButton(self.centralwidget)
+        self.radioButton_3.setChecked(True)
         self.radioButton_3.setGeometry(QtCore.QRect(30, 200, 110, 25))
         self.radioButton_3.setObjectName("radioButton_3")
         self.radioButton_4 = QtWidgets.QRadioButton(self.centralwidget)
@@ -70,6 +73,12 @@ class Ui_BlindPrintSettings(object):
         self.comboBox.setGeometry(QtCore.QRect(200, 20, 51, 27))
         self.comboBox.setStyleSheet("background-color: rgb(218, 188, 154);")
         self.comboBox.setObjectName("comboBox")
+        for font in range(8, 12):
+            self.comboBox.addItem(str(font))
+        for font in range(12, 30, 2):
+            self.comboBox.addItem(str(font))
+        for font in range(30, 50, 6):
+            self.comboBox.addItem(str(font))
         BlindPrintSettings.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(BlindPrintSettings)
@@ -80,15 +89,16 @@ class Ui_BlindPrintSettings(object):
         BlindPrintSettings.setWindowTitle(_translate("BlindPrintSettings", "MainWindow"))
         self.toolButton_file_change.setText(_translate("BlindPrintSettings", "..."))
         self.label.setText(_translate("BlindPrintSettings", f"{self.file_name_for_label}"))
-        self.push_button_translate_it.setText(_translate("BlindPrintSettings", "Add words to dictionary"))
+        self.push_button_translate_it.setText(_translate("BlindPrintSettings", "PASS"))
         self.radioButton.setText(_translate("BlindPrintSettings", "letter only"))
         self.radioButton_2.setText(_translate("BlindPrintSettings", "letter and digit"))
         self.radioButton_3.setText(_translate("BlindPrintSettings", "full text"))
         self.radioButton_4.setText(_translate("BlindPrintSettings", "symbols only"))
         self.label_2.setText(_translate("BlindPrintSettings", " Download text file"))
         self.pushButton.setText(_translate("BlindPrintSettings", "Back"))
-        self.label_3.setText(_translate("BlindPrintSettings", " words"))
+        self.label_3.setText(_translate("BlindPrintSettings", " PASS"))
         self.checkBox.setText(_translate("BlindPrintSettings", "cut custom symbols"))
+        self.lcdNumber.display('PASS')
 
     def open_file(self, BlindPrintSettings):
         self.file_path = QtWidgets.QFileDialog.getOpenFileName(filter='*.txt')[0]
@@ -98,9 +108,29 @@ class Ui_BlindPrintSettings(object):
             self.file_name_for_label = self.file_path[1:]
         self.retranslateUi(BlindPrintSettings)
 
+    def check_text_filters(self):
+        if self.radioButton.isChecked():
+            return 'letter only'
+        if self.radioButton_2.isChecked():
+            return 'letter and digit'
+        if self.radioButton_3.isChecked():
+            return None
+        if self.radioButton_4.isChecked():
+            return 'symbols only'
+
     def close_and_submit(self, BlindPrintSettings, BlindPrint):
-        self.get_text(self.file_path, BlindPrint)
+        if self.file_path:
+            if self.checkBox.isChecked():
+                filters_list = [symbol for symbol in self.lineEdit_2.text()]
+                filters_set = set(filters_list)
+                self.get_text(self.file_path, BlindPrint, self.check_text_filters(), filters_set)
+            else:
+                self.get_text(self.file_path, BlindPrint, self.check_text_filters())
+        font = self.fontComboBox.currentFont()
+        font.setPointSize(int(self.comboBox.currentText()))
+        self.font_change(font)
         BlindPrintSettings.close()
+
 
 
 

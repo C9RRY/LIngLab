@@ -4,6 +4,12 @@ from add_my_translate import Ui_add_my_translate
 
 
 class Ui_add_to_vocab(object):
+    def open_new_windows(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_add_my_translate()
+        self.ui.setupUi(self.window, self.user, self.word, self.insert_into)
+        self.window.show()
+
     def setupUi(self, add_to_vocab, Vocabulary, user, word, insert_into):
         self.user = user
         self.word = word
@@ -59,12 +65,6 @@ class Ui_add_to_vocab(object):
             if word[3] == translated_word:
                 translated_word_id = word[0]
                 add_word_to_user(user, translated_word_id)
-
-    def open_new_windows(self):
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_add_my_translate()
-        self.ui.setupUi(self.window, self.user, self.word, self.insert_into)
-        self.window.show()
 
 
 if __name__ == "__main__":

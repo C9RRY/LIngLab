@@ -1,16 +1,22 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from add_word import Ui_add_to_vocab
-from database import my_vocab, change_the_progress, delete_from_vocab
+from database import my_vocab, change_the_progress, delete_from_vocab, check_current_user
 from utils import get_and_play_audio
 
 
 class Ui_Vocabulary(object):
 
+    def open_new_windows(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_add_to_vocab()
+        self.ui.setupUi(self.window, self.Vocabulary, self.user, self.lineEdit.text(), lambda: self.insert_into())
+        self.window.show()
+
     def setupUi(self, Vocabulary, MainWindow, user):
         # self.timer = QtCore.QTimer()
         # self.timer.timeout.connect(self.insert_into)
         self.Vocabulary = Vocabulary
-        self.user = user
+        self.user = check_current_user()
         Vocabulary.setObjectName("Vocabulary")
         Vocabulary.resize(599, 464)
         Vocabulary.setStyleSheet("background-color: rgb(205, 171, 143);")
@@ -127,11 +133,6 @@ class Ui_Vocabulary(object):
         # self.timer.start(1000)
         QtCore.QMetaObject.connectSlotsByName(Vocabulary)
 
-    def open_new_windows(self):
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_add_to_vocab()
-        self.ui.setupUi(self.window, self.Vocabulary, self.user, self.lineEdit.text(), lambda: self.insert_into())
-        self.window.show()
 
     def retranslateUi(self, Vocabulary):
         _translate = QtCore.QCoreApplication.translate
@@ -160,7 +161,7 @@ class Ui_Vocabulary(object):
 
         # insert data into word_table
     def insert_into(self):
-        words = my_vocab(1)
+        words = my_vocab(self.user['id'])
         row = 0
         self.table_words_widget.setRowCount(len(words))
         self.lcd_words_count.display(self.table_words_widget.rowCount())
@@ -178,13 +179,13 @@ class Ui_Vocabulary(object):
     def set_zero_progress(self):
         for row in range(self.table_words_widget.rowCount()):
             if self.table_words_widget.item(row, 3).checkState() == QtCore.Qt.CheckState.Checked:
-                change_the_progress(self.table_words_widget.item(row, 1).text(), self.user, '*')
+                change_the_progress(self.table_words_widget.item(row, 1).text(), self.user['id'], '*')
         self.insert_into()
 
     def delete_word(self):
         for row in range(self.table_words_widget.rowCount()):
             if self.table_words_widget.item(row, 3).checkState() == QtCore.Qt.CheckState.Checked:
-                delete_from_vocab(self.table_words_widget.item(row, 1).text(), self.user)
+                delete_from_vocab(self.table_words_widget.item(row, 1).text(), self.user['id'])
         self.insert_into()
 
 

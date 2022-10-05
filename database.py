@@ -4,6 +4,15 @@ import sqlite3
 database_path = 'ling_lab.sqlite3'
 
 
+def get_user_list():
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+    result = cursor.execute("SELECT id, user_name "
+                            " FROM users ")
+    user_list = [rows for rows in result]
+    return user_list
+
+
 def get_user_info(user_id):
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
@@ -11,6 +20,54 @@ def get_user_info(user_id):
                                f"WHERE id = '{user_id}'")
     user_info = [rows for rows in result]
     return user_info[0]
+
+
+def new_user(user):
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+
+    cursor.execute(f"INSERT INTO users (user_name, is_current) "
+                   f"VALUES ('{user}', True)")
+    conn.commit()
+
+
+def log_out():
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users "
+                   "SET is_current = False ")
+    conn.commit()
+
+
+def check_current_user():
+    user_dict = {}
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+    result = cursor.execute("SELECT id, user_name, progress, text, font_size, current_position "
+                            "FROM users "
+                            "WHERE is_current = True").fetchall()
+
+    if result:
+        current_user = result[0]
+        user_dict['id'], user_dict['user_name'], user_dict['progress'], user_dict['text'],\
+        user_dict['font_size'], user_dict['current_position'] = current_user[0], current_user[1],\
+        current_user[2], current_user[3], current_user[4], current_user[5]
+        return user_dict
+    else:
+        user_dict['id'], user_dict['user_name'], user_dict['progress'], user_dict['text'], \
+        user_dict['font_size'], user_dict['current_position'] = 0, '', 0, '', 22, 0
+        return user_dict
+
+
+def pin_user(user):
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users "
+                   "SET is_current = False ")
+    cursor.execute(f"UPDATE users "
+                   f"SET is_current = True "
+                   f"WHERE user_name = '{user}' ")
+    conn.commit()
 
 
 def check_word_id(translation):
@@ -105,5 +162,5 @@ def delete_from_vocab(translation, user):
 
 
 if __name__ == "__main__":
-    save_to_dict_and_vocab(1, "home", 'lsfasf')
+    check_current_user()
 

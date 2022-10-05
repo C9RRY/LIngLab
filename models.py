@@ -10,6 +10,11 @@ def create_user():
     cursor.execute("CREATE TABLE users( "
                    "id INTEGER PRIMARY KEY, "
                    "user_name VARCHAR(50) UNIQUE, "
+                   "is_current BOOLEAN, "
+                   "progress INTEGER, "
+                   "text FILEFIELD, "
+                   "current_position INTEGER, "
+                   "font_size INTEGER, "
                    "password VARCHAR(50))")
     conn.commit()
 
@@ -20,7 +25,7 @@ def create_dictionary():
     cursor.execute("CREATE TABLE dictionary( "
                    "id INTEGER PRIMARY KEY , "
                    "word VARCHAR(250), "
-                   "translation VARCHAR(250) NOT NULL UNIQUE,"
+                   "translation VARCHAR(250) NOT NULL, "
                    "collection VARCHAR(50), "
                    "pronounce FILEFIELD) ")
     conn.commit()

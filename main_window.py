@@ -2,7 +2,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from lessons_choice import Ui_LessonChoice
 from vocabulary import Ui_Vocabulary
 from blind_print import Ui_BlindPrint
-from database import get_user_info
+from user import Ui_User
+from user_select import Ui_UserSelect
+from database import check_current_user
 
 
 class Ui_MainWindow(object):
@@ -12,14 +14,25 @@ class Ui_MainWindow(object):
         self.ui.setupUi(self.window, MainWindow, self.user)
         MainWindow.hide()
         self.window.show()
-        # MainWindow.hide()
+
+    def open_profile(self, UserSelect):
+        self.user = check_current_user()
+        self.window = QtWidgets.QMainWindow()
+        if self.user["id"] == 0:
+            self.ui = Ui_UserSelect()
+            self.ui.setupUi(self.window, self.user)
+        else:
+            self.ui = Ui_User()
+            self.ui.setupUi(self.window, self.user, UserSelect)
+        self.window.show()
+        self.retranslateUi(MainWindow)
 
     def setupUi(self, MainWindow):
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(500, 450)
         MainWindow.setStyleSheet("background-color: rgb(53, 132, 228);")
-        self.user = 1
-        # self.user_info = get_user_info(self.user)
+        self.user = check_current_user()
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -31,7 +44,8 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setContentsMargins(-1, 1, -1, -1)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.profileOpenButton = QtWidgets.QPushButton(self.centralwidget)
+        self.profileOpenButton = QtWidgets.QPushButton(self.centralwidget,
+                                                       clicked=lambda: self.open_profile(Ui_UserSelect))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -128,12 +142,23 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MyLearn"))
         self.profileOpenButton.setText(_translate("MainWindow", "Profile"))
-        self.user_info_label.setText(_translate("MainWindow", "Ілля"))
+        self.user_info_label.setText(_translate("MainWindow", self.user['user_name']))
         self.grammarOpenButton.setText(_translate("MainWindow", "Grammar"))
         self.blindPrintOpenButton.setText(_translate("MainWindow", "Blind print"))
         self.wokabularyOpenButton.setText(_translate("MainWindow", "Wokabulary"))
         self.lessonChoiceOpenButton.setText(_translate("MainWindow", "Lessons"))
         self.passButton.setText(_translate("MainWindow", "Pass"))
+
+    def update_main(self):
+        self.user = check_current_user()
+        self.retranslateUi(MainWindow)
+
+    def check_auth(self):
+        self.user = check_current_user()
+        if self.user['id'] == 0:
+            self.open_new_windows(Ui_UserSelect())
+        else:
+            self.open_new_windows(Ui_User())
 
 
 if __name__ == "__main__":

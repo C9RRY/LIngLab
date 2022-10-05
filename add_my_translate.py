@@ -39,8 +39,8 @@ class Ui_add_my_translate(object):
         self.retranslateUi(add_my_translate)
         QtCore.QMetaObject.connectSlotsByName(add_my_translate)
 
-    def save_my_variant(self, add_my_translate):
-        save_to_dict_and_vocab(self.user, self.word, self.lineEdit.text())
+    def save_my_variant(self):
+        save_to_dict_and_vocab(self.user['id'], self.word, self.lineEdit.text())
         self.insert_into()
 
     def retranslateUi(self, add_my_translate):

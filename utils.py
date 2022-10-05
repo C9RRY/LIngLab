@@ -17,6 +17,10 @@ def book_vocabulary_count(book):
     return len(word_list)
 
 
+def get_word_in_text_count(path):
+    text = open_text_file(path)
+    count = text.split(' ')
+
 def dictionary_updater(text):
     text = cut_bad_symbols(text)
     word_list = text.split(' ')
@@ -34,11 +38,31 @@ def dictionary_updater(text):
             print('except in utils')
 
 
-def cut_bad_symbols(work_text):
-    bad_symbols = ' ,.-!?:;()"'
+def leave_good_symbols(text, filters):
+    text = text.replace('__', ' ')
+    text = text.replace('\n', ' ')
+    text = text.replace('  ', ' ')
+    new_text = ''
+    if filters:
+        for symbol in text:
+            if filters == 'letter only' or filters == 'letter and digit':
+                if symbol.isalpha() or symbol == ' ':
+                    new_text += symbol
+            if filters == 'letter and digit' or filters == 'symbols only':
+                if symbol.isdigit():
+                    new_text += symbol
+            if filters == 'symbols only':
+                if not symbol.isalpha():
+                    new_text += symbol
+        return new_text
+    return text
+
+
+def cut_bad_symbols(work_text, filters):
+    bad_symbols = filters
     for symbol in bad_symbols:
-        work_text = work_text.replace(f'{symbol}', ' ')
-        work_text = work_text.replace(f'{symbol}', ' ')
+        work_text = work_text.replace(symbol, '')
+        work_text = work_text.replace(symbol, '')
     return work_text
 
 
@@ -49,10 +73,16 @@ def translate(word):
 
 def current_word(current_position, text):
     stop_symbol = ' ,.-!?":;()'
-    word = text[current_position]
+    how_long_to_end = len(text) - current_position
+    if how_long_to_end > 2:
+        word = text[current_position]
+    else:
+        word = text = '  '
     right_correction = 1
     left_correction = 1
     while True:
+        if len(text) <= current_position + right_correction:
+                break
         if text[current_position] not in stop_symbol:
             if text[current_position + right_correction] not in stop_symbol:
                 word += text[current_position + right_correction]
