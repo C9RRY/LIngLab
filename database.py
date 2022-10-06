@@ -48,7 +48,7 @@ def check_current_user():
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     result = cursor.execute("SELECT id, user_name, progress, text, font_size, current_position, lesson_time, "
-                            "font, text_filter, custom_filter "
+                            "font, text_filter, custom_filter, custom_filter_is_enabled "
                             "FROM users "
                             "WHERE is_current = 'True' ").fetchall()
 
@@ -56,9 +56,9 @@ def check_current_user():
         current_user = result[0]
         user_dict['id'], user_dict['user_name'], user_dict['progress'], user_dict['text'],\
         user_dict['font_size'], user_dict['current_position'], user_dict['lesson_time'], user_dict['font'],\
-        user_dict['text_filter'], user_dict['custom_filter'] = current_user[0],\
+        user_dict['text_filter'], user_dict['custom_filter'], user_dict['custom_filter_is_enabled'] = current_user[0],\
         current_user[1], current_user[2], current_user[3], current_user[4], current_user[5], current_user[6],\
-                                                               current_user[7], current_user[8], current_user[9]
+        current_user[7], current_user[8], current_user[9], current_user[10]
         return user_dict
     else:
         user_dict['id'], user_dict['user_name'], user_dict['progress'], user_dict['text'], \

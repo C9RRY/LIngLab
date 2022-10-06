@@ -98,10 +98,13 @@ def current_word(current_position, text):
 
 
 def open_text_file(file_path):
-    with open(file_path) as work_text:
-        text = work_text.read()
-        print("text extracted")
-        return text
+    try:
+        with open(file_path) as work_text:
+            text = work_text.read()
+            print("text extracted")
+            return text
+    except Exception as exc:
+        return 'select text file in settings!'
 
 
 def get_and_play_audio(word):

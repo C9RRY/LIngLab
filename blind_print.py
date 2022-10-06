@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from new_thread import KeyboardThread, TimerThread
 from utils import open_text_file, current_word, get_and_play_audio, leave_good_symbols, cut_bad_symbols
 from blind_print_options import Ui_BlindPrintSettings
+from database import update_user_info
 
 
 class Ui_BlindPrint(object):
@@ -18,6 +19,7 @@ class Ui_BlindPrint(object):
 
     def setupUi(self, BlindPrint, MainWindow, user):
         self.user = user
+        self.user_id = user['id']
         self.BlindPrint = BlindPrint
         self.current_position = user['current_position']
         self.print_text = 'START '
@@ -28,6 +30,9 @@ class Ui_BlindPrint(object):
         self.font = user['font']
         self.file_path = user['text']
         self.text_filter = user['text_filter']
+        self.custom_filters = user['custom_filter']
+        self.custom_filters_is_enabled = user['custom_filter_is_enabled']
+
 
         # self.timer.timeout.connect(print("timer timeout"))
         #self.thread = KeyboardThread
@@ -182,14 +187,15 @@ class Ui_BlindPrint(object):
         self.pushButton_stop_lesson.setObjectName("pushButton_stop_lesson")
         self.gridLayout.addWidget(self.pushButton_stop_lesson, 14, 10, 1, 1)
         BlindPrint.setCentralWidget(self.centralwidget)
-        self.get_text(self.file_path, BlindPrint, self.text_filter)
+
         for minutes in range(5, 31, 5):
             self.comboBox.addItem(str(minutes))
+        self.comboBox.setCurrentText(str(self.lesson_time))
         self.time_thread = TimerThread(mainwindow=self)
         # self.timer.start(2000)
         QtCore.QMetaObject.connectSlotsByName(BlindPrint)
         self.keyboard_thread = KeyboardThread(mainwindow=self)
-        self.get_text(self.file_path, BlindPrint, self.text_filter)
+        self.get_text(self.file_path, BlindPrint, self.text_filter, self.custom_filters)
 
     def retranslateUi(self, BlindPrint):
         _translate = QtCore.QCoreApplication.translate
@@ -199,7 +205,7 @@ class Ui_BlindPrint(object):
         self.label.setFont(QtGui.QFont(self.font, self.font_size))
         self.label_2.setText(_translate("BlindPrint", self.print_text[self.current_position: self.current_position + 35]))
         self.label_2.setFont(QtGui.QFont(self.font, self.font_size))
-        self.label.setText(_translate("BlindPrint", "TextLabel"))
+        self.label.setText(_translate("BlindPrint", ""))
         self.tool_button.setText(_translate("BlindPrint", "..."))
         self.push_button_pronounce.setText(_translate("BlindPrint", "Pronounce"))
         self.profileOpenButton.setText(_translate("BlindPrint", "Profile"))
@@ -208,17 +214,17 @@ class Ui_BlindPrint(object):
         self.pushButton_start_lesson.setText(_translate("BlindPrint", "Start"))
         self.pushButton_stop_lesson.setText(_translate("BlindPrint", "Stop"))
 
-
-
     def lesson_start(self):
         self.keyboard_thread.start()
         self.time_thread.start()
         self.keyboard_thread.pause_off()
         self.time_thread.pause_off(self.comboBox.currentText())
+        update_user_info('lesson_time', self.comboBox.currentText(), self.user_id)
 
     def lesson_stop(self):
         self.keyboard_thread.pause_thr()
         self.time_thread.pause_thr()
+        update_user_info('current_position', self.current_position, self.user_id)
 
     def send_to_lcd(self, time):
         time_minutes = str(time // 60)
@@ -232,9 +238,9 @@ class Ui_BlindPrint(object):
 
     def print_key(self, value):
         self.label_current_word.setText(self.current_word)
-        if len(self.print_text) == self.current_position:
+        if len(self.print_text) <= self.current_position:
             self.print_text, self.current_position = "The_End", 0
-        if value == self.print_text[self.current_position]:
+        elif value == self.print_text[self.current_position]:
             if self.current_position > 30:
                 self.label.setText(self.print_text[self.current_position - 30: self.current_position + 1])
                 self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + 35])
@@ -244,11 +250,18 @@ class Ui_BlindPrint(object):
             self.current_position += 1
         self.current_word = current_word(self.current_position, self.print_text)
 
-    def get_text(self, path, BlindPrint, filters, custom_filters=None):
+    def get_text(self, path, BlindPrint, filters, custom_filters, current_position=None):
+        if current_position:
+            self.current_position = current_position
         print_text = open_text_file(path)
         self.print_text = leave_good_symbols(print_text, filters)
         if custom_filters:
-            self.print_text = cut_bad_symbols(self.print_text, custom_filters)
+            update_user_info('custom_filter_is_enabled', 1, self.user_id)
+            filters_list = [symbol for symbol in custom_filters]
+            filters_set = set(filters_list)
+            self.print_text = cut_bad_symbols(self.print_text, filters_set)
+        else:
+            update_user_info('custom_filter_is_enabled', 0, self.user_id)
         self.retranslateUi(BlindPrint)
 
     def pronounce(self):

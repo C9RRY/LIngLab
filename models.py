@@ -15,8 +15,9 @@ def create_user():
                    "lesson_time INTEGER DEFAULT 10, "
                    "text VARCHAR(250) DEFAULT '', "
                    "current_position INTEGER DEFAULT 0, "
-                   "text_filter VARCHAR(50), "
+                   "text_filter VARCHAR(50) DEFAULT 'full text', "
                    "custom_filter VARCHAR(50), "
+                   "custom_filter_is_enabled BOOLEAN DEFAULT FALSE, "
                    "font VARCHAR(100) DEFAULT 'Times', "
                    "font_size INTEGER DEFAULT 22, "
                    "password VARCHAR(50))")
