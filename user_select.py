@@ -8,20 +8,20 @@ class Ui_UserSelect(object):
     def open_user_create(self, user, UserSelect):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_UserCreate()
-        self.ui.setupUi(self.window, user, Ui_UserSelect)
+        self.ui.setupUi(self.window, user, Ui_UserSelect, lambda: self.update_main_())
         self.window.show()
         UserSelect.close()
 
-    def open_user(self, UserSelect):
+    def save_and_close(self, UserSelect):
         pin_user(self.comboBox.currentText())
         self.user = check_current_user()
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_User()
-        self.ui.setupUi(self.window, self.user, Ui_UserSelect)
-        self.window.show()
+        self.update_main_()
         self.UserSelect.close()
+    def update_main_(self):
+        self.update_main()
 
-    def setupUi(self, UserSelect, user):
+    def setupUi(self, UserSelect, user, update_main):
+        self.update_main = update_main
         self.UserSelect = UserSelect
         self.user = user
         UserSelect.setObjectName("UserSelect")
@@ -34,7 +34,7 @@ class Ui_UserSelect(object):
         self.comboBox.setStyleSheet("background-color: rgb(153, 193, 241);")
         self.comboBox.setObjectName("comboBox")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget,
-                                                clicked=lambda: self.open_user(UserSelect))
+                                                clicked=lambda: self.save_and_close(UserSelect))
         self.pushButton.setGeometry(QtCore.QRect(20, 80, 91, 27))
         self.pushButton.setStyleSheet("background-color: rgb(98, 160, 234);")
         self.pushButton.setObjectName("pushButton")

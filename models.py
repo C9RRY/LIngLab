@@ -11,11 +11,18 @@ def create_user():
                    "id INTEGER PRIMARY KEY, "
                    "user_name VARCHAR(50) UNIQUE, "
                    "is_current BOOLEAN, "
-                   "progress INTEGER, "
-                   "text FILEFIELD, "
-                   "current_position INTEGER, "
-                   "font_size INTEGER, "
+                   "progress INTEGER DEFAULT O, "
+                   "lesson_time INTEGER DEFAULT 10, "
+                   "text VARCHAR(250) DEFAULT '', "
+                   "current_position INTEGER DEFAULT 0, "
+                   "text_filter VARCHAR(50), "
+                   "custom_filter VARCHAR(50), "
+                   "font VARCHAR(100) DEFAULT 'Times', "
+                   "font_size INTEGER DEFAULT 22, "
                    "password VARCHAR(50))")
+
+    cursor.execute("INSERT INTO users (user_name, is_current, font, font_size) "
+                   "VALUES ('Public', 'True', 'Serif', 22)")
     conn.commit()
 
 

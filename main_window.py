@@ -18,12 +18,12 @@ class Ui_MainWindow(object):
     def open_profile(self, UserSelect):
         self.user = check_current_user()
         self.window = QtWidgets.QMainWindow()
-        if self.user["id"] == 0:
+        if self.user["id"] == 1:
             self.ui = Ui_UserSelect()
-            self.ui.setupUi(self.window, self.user)
+            self.ui.setupUi(self.window, self.user, lambda: self.update_main() )
         else:
             self.ui = Ui_User()
-            self.ui.setupUi(self.window, self.user, UserSelect)
+            self.ui.setupUi(self.window, self.user, UserSelect, lambda: self.update_main())
         self.window.show()
         self.retranslateUi(MainWindow)
 

@@ -17,7 +17,7 @@ def get_user_info(user_id):
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     result = cursor.execute(f"SELECT * FROM users "
-                               f"WHERE id = '{user_id}'")
+                            f"WHERE id = '{user_id}'")
     user_info = [rows for rows in result]
     return user_info[0]
 
@@ -25,9 +25,10 @@ def get_user_info(user_id):
 def new_user(user):
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
-
+    cursor.execute("UPDATE users "
+                   "SET is_current = 'False' ")
     cursor.execute(f"INSERT INTO users (user_name, is_current) "
-                   f"VALUES ('{user}', True)")
+                   f"VALUES ('{user}', 'True')")
     conn.commit()
 
 
@@ -35,7 +36,10 @@ def log_out():
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     cursor.execute("UPDATE users "
-                   "SET is_current = False ")
+                   "SET is_current = 'False' ")
+    cursor.execute("UPDATE users "
+                   "SET is_current = 'True' "
+                   "WHERE id = '1'")
     conn.commit()
 
 
@@ -43,15 +47,18 @@ def check_current_user():
     user_dict = {}
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
-    result = cursor.execute("SELECT id, user_name, progress, text, font_size, current_position "
+    result = cursor.execute("SELECT id, user_name, progress, text, font_size, current_position, lesson_time, "
+                            "font, text_filter, custom_filter "
                             "FROM users "
-                            "WHERE is_current = True").fetchall()
+                            "WHERE is_current = 'True' ").fetchall()
 
     if result:
         current_user = result[0]
         user_dict['id'], user_dict['user_name'], user_dict['progress'], user_dict['text'],\
-        user_dict['font_size'], user_dict['current_position'] = current_user[0], current_user[1],\
-        current_user[2], current_user[3], current_user[4], current_user[5]
+        user_dict['font_size'], user_dict['current_position'], user_dict['lesson_time'], user_dict['font'],\
+        user_dict['text_filter'], user_dict['custom_filter'] = current_user[0],\
+        current_user[1], current_user[2], current_user[3], current_user[4], current_user[5], current_user[6],\
+                                                               current_user[7], current_user[8], current_user[9]
         return user_dict
     else:
         user_dict['id'], user_dict['user_name'], user_dict['progress'], user_dict['text'], \
@@ -63,9 +70,9 @@ def pin_user(user):
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     cursor.execute("UPDATE users "
-                   "SET is_current = False ")
+                   "SET is_current = 'False' ")
     cursor.execute(f"UPDATE users "
-                   f"SET is_current = True "
+                   f"SET is_current = 'True' "
                    f"WHERE user_name = '{user}' ")
     conn.commit()
 
@@ -79,6 +86,15 @@ def check_word_id(translation):
     return words_list
 
 
+def update_user_info(column, value, user_id):
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+    cursor.execute(f"UPDATE users "
+                   f"SET {column} = '{value}' "
+                   f"WHERE id = {user_id} ")
+    conn.commit()
+
+
 def my_vocab(user_id):
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
@@ -88,7 +104,7 @@ def my_vocab(user_id):
                          "ON d.id = v.word_id "
                          "INNER JOIN users as u "
                          "ON v.user_id = u.id "
-                         f"WHERE u.id = {user_id}")
+                         f"WHERE u.id = '{user_id}'")
     vocab_list = [rows for rows in res]
     return vocab_list
 

@@ -1,11 +1,16 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from database import update_user_info, check_current_user
 
 class Ui_BlindPrintSettings(object):
     def setupUi(self, BlindPrintSettings, BlindPrint, get_text, font_change, user):
+        user = check_current_user()
+        self.user_id = user['id']
+        self.font_size = user['font_size']
+        self.text_filter = user['text_filter']
+        self.custom_filter = user['custom_filter']
         self.font_change = font_change
         self.get_text = get_text
-        self.file_path = None
+        self.file_path = user['text']
         BlindPrintSettings.setObjectName("BlindPrintSettings")
         BlindPrintSettings.resize(352, 464)
         BlindPrintSettings.setStyleSheet("background-color: rgb(102, 111, 108);")
@@ -88,7 +93,7 @@ class Ui_BlindPrintSettings(object):
         _translate = QtCore.QCoreApplication.translate
         BlindPrintSettings.setWindowTitle(_translate("BlindPrintSettings", "MainWindow"))
         self.toolButton_file_change.setText(_translate("BlindPrintSettings", "..."))
-        self.label.setText(_translate("BlindPrintSettings", f"{self.file_name_for_label}"))
+        self.label.setText(_translate("BlindPrintSettings", self.file_path))
         self.push_button_translate_it.setText(_translate("BlindPrintSettings", "PASS"))
         self.radioButton.setText(_translate("BlindPrintSettings", "letter only"))
         self.radioButton_2.setText(_translate("BlindPrintSettings", "letter and digit"))
@@ -98,10 +103,13 @@ class Ui_BlindPrintSettings(object):
         self.pushButton.setText(_translate("BlindPrintSettings", "Back"))
         self.label_3.setText(_translate("BlindPrintSettings", " PASS"))
         self.checkBox.setText(_translate("BlindPrintSettings", "cut custom symbols"))
+        self.comboBox.setCurrentText(str(self.font_size))
         self.lcdNumber.display('PASS')
 
     def open_file(self, BlindPrintSettings):
+
         self.file_path = QtWidgets.QFileDialog.getOpenFileName(filter='*.txt')[0]
+        update_user_info('text', self.file_path, self.user_id)
         if len(self.file_path) > 15:
             self.file_name_for_label = self.file_path[:10] + ' ... ' + self.file_path[-20:]
         else:
@@ -114,20 +122,26 @@ class Ui_BlindPrintSettings(object):
         if self.radioButton_2.isChecked():
             return 'letter and digit'
         if self.radioButton_3.isChecked():
-            return None
+            return 'full text'
         if self.radioButton_4.isChecked():
             return 'symbols only'
 
     def close_and_submit(self, BlindPrintSettings, BlindPrint):
         if self.file_path:
+            self.text_filter = self.check_text_filters()
+            update_user_info('text_filter', self.text_filter, self.user_id)
             if self.checkBox.isChecked():
-                filters_list = [symbol for symbol in self.lineEdit_2.text()]
+                self.custom_filter = self.lineEdit_2.text()
+                update_user_info('custom_filter', self.custom_filter, self.user_id)
+                filters_list = [symbol for symbol in self.custom_filter]
                 filters_set = set(filters_list)
-                self.get_text(self.file_path, BlindPrint, self.check_text_filters(), filters_set)
+                self.get_text(self.file_path, BlindPrint, self.text_filter, filters_set)
             else:
-                self.get_text(self.file_path, BlindPrint, self.check_text_filters())
+                self.get_text(self.file_path, BlindPrint, self.text_filter)
         font = self.fontComboBox.currentFont()
-        font.setPointSize(int(self.comboBox.currentText()))
+        self.font_size = self.comboBox.currentText()
+        update_user_info('font_size', self.font_size, self.user_id)
+        font.setPointSize(int(self.font_size))
         self.font_change(font)
         BlindPrintSettings.close()
 

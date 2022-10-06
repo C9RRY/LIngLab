@@ -5,14 +5,10 @@ from database import check_current_user, log_out
 class Ui_User(object):
     def open_user_select(self, UserSelect):
         log_out()
-        self.user = check_current_user()
-        self.window = QtWidgets.QMainWindow()
-        self.ui = UserSelect()
-        self.ui.setupUi(self.window, self.user)
-        self.window.show()
-        self.User.close()
+        self.update_main()
 
-    def setupUi(self, User, user, UserSelect):
+    def setupUi(self, User, user, UserSelect, update_main):
+        self.update_main = update_main
         self.User = User
         self.UserSelect = UserSelect
         self.user = user
@@ -65,6 +61,7 @@ class Ui_User(object):
         self.label_9.setObjectName("label_9")
         self.logOut = QtWidgets.QPushButton(self.centralwidget,
                                             clicked=lambda: self.open_user_select(UserSelect))
+        self.logOut.clicked.connect(User.close)
         self.logOut.setGeometry(QtCore.QRect(10, 20, 61, 21))
         self.logOut.setStyleSheet("background-color: rgb(154, 153, 150);")
         self.logOut.setObjectName("logOut")

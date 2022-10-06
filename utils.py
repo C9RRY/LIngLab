@@ -43,7 +43,7 @@ def leave_good_symbols(text, filters):
     text = text.replace('\n', ' ')
     text = text.replace('  ', ' ')
     new_text = ''
-    if filters:
+    if filters != 'full text':
         for symbol in text:
             if filters == 'letter only' or filters == 'letter and digit':
                 if symbol.isalpha() or symbol == ' ':

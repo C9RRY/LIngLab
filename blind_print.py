@@ -17,15 +17,22 @@ class Ui_BlindPrint(object):
         # MainWindow.hide()
 
     def setupUi(self, BlindPrint, MainWindow, user):
+        self.user = user
         self.BlindPrint = BlindPrint
         self.current_position = user['current_position']
         self.print_text = 'START '
         self.current_word = ' '
         self.timer = QtCore.QTimer()
+        self.lesson_time = user['lesson_time']
+        self.font_size = user['font_size']
+        self.font = user['font']
+        self.file_path = user['text']
+        self.text_filter = user['text_filter']
+
         # self.timer.timeout.connect(print("timer timeout"))
         #self.thread = KeyboardThread
         #self.time_thread = TimerThread
-        self.user = user
+
 
         BlindPrint.setObjectName("BlindPrint")
         BlindPrint.resize(838, 523)
@@ -175,20 +182,23 @@ class Ui_BlindPrint(object):
         self.pushButton_stop_lesson.setObjectName("pushButton_stop_lesson")
         self.gridLayout.addWidget(self.pushButton_stop_lesson, 14, 10, 1, 1)
         BlindPrint.setCentralWidget(self.centralwidget)
-        self.retranslateUi(BlindPrint)
+        self.get_text(self.file_path, BlindPrint, self.text_filter)
         for minutes in range(5, 31, 5):
             self.comboBox.addItem(str(minutes))
         self.time_thread = TimerThread(mainwindow=self)
         # self.timer.start(2000)
         QtCore.QMetaObject.connectSlotsByName(BlindPrint)
         self.keyboard_thread = KeyboardThread(mainwindow=self)
+        self.get_text(self.file_path, BlindPrint, self.text_filter)
 
     def retranslateUi(self, BlindPrint):
         _translate = QtCore.QCoreApplication.translate
         BlindPrint.setWindowTitle(_translate("BlindPrint", "MyLearn"))
         self.push_button_back.setText(_translate("BlindPrint", "Back"))
         self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - 35: self.current_position]))
+        self.label.setFont(QtGui.QFont(self.font, self.font_size))
         self.label_2.setText(_translate("BlindPrint", self.print_text[self.current_position: self.current_position + 35]))
+        self.label_2.setFont(QtGui.QFont(self.font, self.font_size))
         self.label.setText(_translate("BlindPrint", "TextLabel"))
         self.tool_button.setText(_translate("BlindPrint", "..."))
         self.push_button_pronounce.setText(_translate("BlindPrint", "Pronounce"))
@@ -197,6 +207,8 @@ class Ui_BlindPrint(object):
         self.pushButton_2.setText(_translate("BlindPrint", "Translate"))
         self.pushButton_start_lesson.setText(_translate("BlindPrint", "Start"))
         self.pushButton_stop_lesson.setText(_translate("BlindPrint", "Stop"))
+
+
 
     def lesson_start(self):
         self.keyboard_thread.start()

@@ -5,16 +5,14 @@ from user import Ui_User
 
 class Ui_UserCreate(object):
     def open_user(self, UserSelect):
-        new_name = self.lineEdit.text()
-        new_user(new_name)
+        name = self.lineEdit.text()
+        new_user(name)
         self.user = check_current_user()
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_User()
-        self.ui.setupUi(self.window, self.user, UserSelect)
-        self.window.show()
+        self.update_main()
         self.UserCreate.close()
 
-    def setupUi(self, UserCreate, user, UserSelect):
+    def setupUi(self, UserCreate, user, UserSelect, update_main):
+        self.update_main = update_main
         self.UserSelect = UserSelect
         self.UserCreate = UserCreate
         UserCreate.setObjectName("UserCreate")
