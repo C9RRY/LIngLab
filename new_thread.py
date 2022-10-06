@@ -58,14 +58,16 @@ class TimerThread(QThread):
         while self.pause_thread == False:
             if self.seconds % self.stop_time == 0 and self.seconds != 0:
                 self.lesson_stop()
+                self.mainwindow.keyboard_stop()
             self.send_to_lcd(self.seconds)
-            time.sleep(1)
+            time.sleep(1/30)
             self.seconds += 1
 
     def pause_thr(self):
         self.pause_thread = True
         if self.clean_timer_if_press_stop == True:
             self.seconds = 0
+            self.mainwindow.post_stop()
             self.send_to_lcd(self.seconds)
         self.clean_timer_if_press_stop = True
 

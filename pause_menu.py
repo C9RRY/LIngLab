@@ -2,19 +2,22 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_PauseMenu(object):
-    def setupUi(self, PauseMenu, current, error, time):
+    def setupUi(self, PauseMenu, count, error, time):
         PauseMenu.setObjectName("PauseMenu")
         PauseMenu.resize(240, 135)
         PauseMenu.setStyleSheet("background-color: rgb(71, 94, 87);")
         self.centralwidget = QtWidgets.QWidget(PauseMenu)
         self.centralwidget.setObjectName("centralwidget")
         self.lcdNumber = QtWidgets.QLCDNumber(self.centralwidget)
+        self.lcdNumber.display(str(error / (error + count) * 100)[:4] if error != 0 else '0')
         self.lcdNumber.setGeometry(QtCore.QRect(140, 90, 61, 23))
         self.lcdNumber.setObjectName("lcdNumber")
         self.lcdNumber_2 = QtWidgets.QLCDNumber(self.centralwidget)
+        self.lcdNumber_2.display(str(count / time * 60)[:3] if time != 0 else "0")
         self.lcdNumber_2.setGeometry(QtCore.QRect(140, 50, 61, 23))
         self.lcdNumber_2.setObjectName("lcdNumber_2")
         self.lcdNumber_3 = QtWidgets.QLCDNumber(self.centralwidget)
+        self.lcdNumber_3.display(str(count))
         self.lcdNumber_3.setGeometry(QtCore.QRect(140, 10, 61, 23))
         self.lcdNumber_3.setObjectName("lcdNumber_3")
         self.label_printed = QtWidgets.QLabel(self.centralwidget)

@@ -41,12 +41,7 @@ class Ui_BlindPrint(object):
         self.correct_print_count = 0
         self.print_errors = 0
         self.current_lesson_time = 0
-
-
-        # self.timer.timeout.connect(print("timer timeout"))
-        #self.thread = KeyboardThread
-        #self.time_thread = TimerThread
-
+        self.pause_status = False
 
         BlindPrint.setObjectName("BlindPrint")
         BlindPrint.resize(838, 523)
@@ -201,7 +196,6 @@ class Ui_BlindPrint(object):
             self.comboBox.addItem(str(minutes))
         self.comboBox.setCurrentText(str(self.lesson_time))
         self.time_thread = TimerThread(mainwindow=self)
-        # self.timer.start(2000)
         QtCore.QMetaObject.connectSlotsByName(BlindPrint)
         self.keyboard_thread = KeyboardThread(mainwindow=self)
         self.get_text(self.file_path, BlindPrint, self.text_filter, self.custom_filters)
@@ -225,18 +219,26 @@ class Ui_BlindPrint(object):
 
     def lesson_start(self):
         self.keyboard_thread.start()
-        self.time_thread.start()
         self.keyboard_thread.pause_off()
         self.time_thread.pause_off(self.comboBox.currentText())
-        self.correct_print_count = 0
-        self.print_errors = 0
         update_user_info('lesson_time', self.comboBox.currentText(), self.user_id)
 
     def lesson_stop(self):
-        self.keyboard_thread.pause_thr()
+        if not self.pause_status:
+            self.open_pause_menu(self.correct_print_count, self.print_errors, self.current_lesson_time)
+        if self.pause_status:
+            self.window2.close()
+        self.pause_status = True
         self.time_thread.pause_thr()
         update_user_info('current_position', self.current_position, self.user_id)
-        self.open_pause_menu(self.correct_print_count, self.print_errors, self.current_lesson_time)
+
+    def post_stop(self):
+        self.correct_print_count = 0
+        self.print_errors = 0
+        self.keyboard_thread.pause_thr()
+
+    def keyboard_stop(self):
+        self.keyboard_thread.pause_thr()
 
     def send_to_lcd(self, time):
         self.current_lesson_time = time
@@ -251,6 +253,9 @@ class Ui_BlindPrint(object):
         self.format_lesson_time = formate_time
 
     def print_key(self, value):
+        self.pause_status = False
+        self.time_thread.start()
+        self.time_thread.pause_off(self.comboBox.currentText())
         self.label_current_word.setText(self.current_word)
         if len(self.print_text) <= self.current_position:
             self.print_text, self.current_position = "The_End", 0
@@ -258,7 +263,7 @@ class Ui_BlindPrint(object):
         elif value == self.print_text[self.current_position]:
             self.correct_print_count += 1
             if self.current_position > 30:
-                self.label.setText(self.print_text[self.current_position - 30: self.current_position + 1])
+                self.label.setText(self.print_text[self.current_position - 23: self.current_position + 1])
                 self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + 35])
             else:
                 self.label.setText(self.print_text[:self.current_position + 1])

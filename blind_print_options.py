@@ -31,6 +31,7 @@ class Ui_BlindPrintSettings(object):
         self.label.setStyleSheet("background-color: rgb(71, 94, 87);")
         self.label.setObjectName("label")
         self.fontComboBox = QtWidgets.QFontComboBox(self.centralwidget)
+        self.fontComboBox.setCurrentText(self.font)
         self.fontComboBox.setGeometry(QtCore.QRect(20, 20, 181, 27))
         self.fontComboBox.setStyleSheet("background-color: rgb(218, 188, 154);")
         self.fontComboBox.setObjectName("fontComboBox")
@@ -161,12 +162,12 @@ class Ui_BlindPrintSettings(object):
             self.custom_filter = None
         update_user_info('custom_filter', self.custom_filter, self.user_id)
         self.get_text(self.file_path, BlindPrint, self.text_filter, self.custom_filter, self.current_position)
-        font = self.fontComboBox.currentFont()
+        # font = self.fontComboBox.currentFont()
         self.font = self.fontComboBox.currentText()
         self.font_size = self.comboBox.currentText()
         update_user_info('font', self.font, self.user_id)
         update_user_info('font_size', self.font_size, self.user_id)
-        font.setPointSize(int(self.font_size))
+        font = QtGui.QFont(self.font, int(self.font_size))
         self.font_change(font)
         BlindPrintSettings.close()
 
