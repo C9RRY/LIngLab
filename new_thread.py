@@ -1,7 +1,9 @@
 from PyQt5.QtCore import QThread, pyqtSignal
+from pause_menu import Ui_PauseMenu
 from pynput import keyboard
 import subprocess
 import time
+
 
 class KeyboardThread(QThread):
     def __init__(self, mainwindow):

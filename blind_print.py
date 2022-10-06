@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from new_thread import KeyboardThread, TimerThread
 from utils import open_text_file, current_word, get_and_play_audio, leave_good_symbols, cut_bad_symbols
 from blind_print_options import Ui_BlindPrintSettings
+from pause_menu import Ui_PauseMenu
 from database import update_user_info
 
 
@@ -15,7 +16,12 @@ class Ui_BlindPrint(object):
         self.ui = ui_name
         self.ui.setupUi(self.window, BlindPrint, get_text, self.font_change, self.user)
         self.window.show()
-        # MainWindow.hide()
+
+    def open_pause_menu(self, print_count, print_error, time):
+        self.window2 = QtWidgets.QMainWindow()
+        self.ui2 = Ui_PauseMenu()
+        self.ui2.setupUi(self.window2, print_count, print_error, time)
+        self.window2.show()
 
     def setupUi(self, BlindPrint, MainWindow, user):
         self.user = user
@@ -32,6 +38,9 @@ class Ui_BlindPrint(object):
         self.text_filter = user['text_filter']
         self.custom_filters = user['custom_filter']
         self.custom_filters_is_enabled = user['custom_filter_is_enabled']
+        self.correct_print_count = 0
+        self.print_errors = 0
+        self.current_lesson_time = 0
 
 
         # self.timer.timeout.connect(print("timer timeout"))
@@ -219,14 +228,18 @@ class Ui_BlindPrint(object):
         self.time_thread.start()
         self.keyboard_thread.pause_off()
         self.time_thread.pause_off(self.comboBox.currentText())
+        self.correct_print_count = 0
+        self.print_errors = 0
         update_user_info('lesson_time', self.comboBox.currentText(), self.user_id)
 
     def lesson_stop(self):
         self.keyboard_thread.pause_thr()
         self.time_thread.pause_thr()
         update_user_info('current_position', self.current_position, self.user_id)
+        self.open_pause_menu(self.correct_print_count, self.print_errors, self.current_lesson_time)
 
     def send_to_lcd(self, time):
+        self.current_lesson_time = time
         time_minutes = str(time // 60)
         if len(time_minutes) == 1:
             time_minutes = '0' + time_minutes
@@ -235,12 +248,15 @@ class Ui_BlindPrint(object):
             time_seconds = '0' + time_seconds
         formate_time = time_minutes + ':' + time_seconds
         self.lcdNumber_2.display(formate_time)
+        self.format_lesson_time = formate_time
 
     def print_key(self, value):
         self.label_current_word.setText(self.current_word)
         if len(self.print_text) <= self.current_position:
             self.print_text, self.current_position = "The_End", 0
+            self.lesson_stop()
         elif value == self.print_text[self.current_position]:
+            self.correct_print_count += 1
             if self.current_position > 30:
                 self.label.setText(self.print_text[self.current_position - 30: self.current_position + 1])
                 self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + 35])
@@ -248,9 +264,15 @@ class Ui_BlindPrint(object):
                 self.label.setText(self.print_text[:self.current_position + 1])
                 self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + 35])
             self.current_position += 1
+        else:
+            if value != '':
+                self.print_errors += 1
+        print(self.correct_print_count, self.print_errors)
         self.current_word = current_word(self.current_position, self.print_text)
 
     def get_text(self, path, BlindPrint, filters, custom_filters, current_position=None):
+        if custom_filters == 'None':
+            custom_filters = None
         if current_position:
             self.current_position = current_position
         print_text = open_text_file(path)
