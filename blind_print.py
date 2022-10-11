@@ -3,7 +3,7 @@ from new_thread import KeyboardThread, TimerThread
 from utils import open_text_file, current_word, get_and_play_audio, leave_good_symbols, cut_bad_symbols
 from blind_print_options import Ui_BlindPrintSettings
 from pause_menu import Ui_PauseMenu
-from database import update_user_info, save_to_print_session
+from database import update_user_info, save_to_print_session, check_current_user
 
 
 class Ui_BlindPrint(object):
@@ -11,10 +11,10 @@ class Ui_BlindPrint(object):
         main_window.show()
         current_window.hide()
 
-    def open_new_windows(self, ui_name, BlindPrint, get_text):
+    def open_new_windows(self, ui_name, BlindPrint, get_text, update_user):
         self.window = QtWidgets.QMainWindow()
         self.ui = ui_name
-        self.ui.setupUi(self.window, BlindPrint, get_text, self.font_change, self.user)
+        self.ui.setupUi(self.window, BlindPrint, get_text, self.font_change, update_user, self.user)
         self.window.show()
 
     def open_pause_menu(self, print_count, print_error, time):
@@ -43,7 +43,6 @@ class Ui_BlindPrint(object):
         self.current_lesson_time = 0
         self.format_lesson_time = '00:00'
         self.pause_status = False
-
         BlindPrint.setObjectName("BlindPrint")
         BlindPrint.resize(900, 523)
         BlindPrint.setStyleSheet("background-color: rgb(102, 111, 108);")
@@ -120,7 +119,7 @@ class Ui_BlindPrint(object):
         self.gridLayout_2.addWidget(self.lcdNumber_2, 2, 10, 1, 1)
         self.tool_button = QtWidgets.QToolButton(self.centralwidget,
                                                  clicked=lambda: self.open_new_windows(
-                                                     Ui_BlindPrintSettings(), BlindPrint, self.get_text))
+                                                     Ui_BlindPrintSettings(), BlindPrint, self.get_text, self.update_user))
         self.tool_button.setFocusPolicy(QtCore.Qt.NoFocus)
         self.tool_button.setStyleSheet("background-color: rgb(134, 94, 60);")
         self.tool_button.setObjectName("tool_button")
@@ -217,6 +216,13 @@ class Ui_BlindPrint(object):
         self.pushButton_start_lesson.setText(_translate("BlindPrint", "Start"))
         self.pushButton_stop_lesson.setText(_translate("BlindPrint", "Stop"))
 
+    def update_user(self):
+        user = check_current_user()
+        self.current_position = user['current_position']
+        self.lesson_time = user['lesson_time']
+        self.font_size = user['font_size']
+        self.font = user['font']
+
     def lesson_start(self):
         _translate = QtCore.QCoreApplication.translate
         self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - 25: self.current_position]))
@@ -301,6 +307,7 @@ class Ui_BlindPrint(object):
         else:
             update_user_info('custom_filter_is_enabled', 0, self.user_id)
         self.retranslateUi(BlindPrint)
+
 
     def pronounce(self):
         get_and_play_audio(self.current_word)

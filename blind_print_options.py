@@ -3,8 +3,9 @@ from database import update_user_info, check_current_user, get_print_sessions, d
 
 
 class Ui_BlindPrintSettings(object):
-    def setupUi(self, BlindPrintSettings, BlindPrint, get_text, font_change, user):
+    def setupUi(self, BlindPrintSettings, BlindPrint, get_text, font_change, update_user, user):
         user = check_current_user()
+        self.update_user = update_user
         self.user_id = user['id']
         self.font = user['font']
         self.font_size = user['font_size']
@@ -129,6 +130,8 @@ class Ui_BlindPrintSettings(object):
             self.comboBox.addItem(str(font))
         for font in range(30, 50, 6):
             self.comboBox.addItem(str(font))
+        self.comboBox.setCurrentText(str(self.font_size))
+        self.fontComboBox.setCurrentText(self.font)
         self.pushButton = QtWidgets.QPushButton(self.tab_2)
         self.pushButton.clicked.connect(lambda: self.close_and_submit(BlindPrintSettings, BlindPrint))
         self.pushButton.setGeometry(QtCore.QRect(240, 410, 88, 27))
@@ -241,14 +244,16 @@ class Ui_BlindPrintSettings(object):
         else:
             self.custom_filter = None
         update_user_info('custom_filter', self.custom_filter, self.user_id)
-        self.get_text(self.file_path, BlindPrint, self.text_filter, self.custom_filter, self.current_position)
-        # font = self.fontComboBox.currentFont()
         self.font = self.fontComboBox.currentText()
         self.font_size = self.comboBox.currentText()
-        update_user_info('font', self.font, self.user_id)
-        update_user_info('font_size', self.font_size, self.user_id)
         font = QtGui.QFont(self.font, int(self.font_size))
         self.font_change(font)
+        self.get_text(self.file_path, BlindPrint, self.text_filter, self.custom_filter, self.current_position)
+        # font = self.fontComboBox.currentFont()
+
+        update_user_info('font', self.font, self.user_id)
+        update_user_info('font_size', self.font_size, self.user_id)
+        self.update_user()
         BlindPrintSettings.close()
 
 
