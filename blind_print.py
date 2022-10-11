@@ -204,7 +204,7 @@ class Ui_BlindPrint(object):
         _translate = QtCore.QCoreApplication.translate
         BlindPrint.setWindowTitle(_translate("BlindPrint", "MyLearn"))
         self.push_button_back.setText(_translate("BlindPrint", "Back"))
-        self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - 35: self.current_position]))
+        self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - 25: self.current_position]))
         self.label.setFont(QtGui.QFont(self.font, self.font_size))
         self.label_2.setText(_translate("BlindPrint", self.print_text[self.current_position: self.current_position + 35]))
         self.label_2.setFont(QtGui.QFont(self.font, self.font_size))

@@ -1,10 +1,6 @@
 from playsound import playsound
 from pathlib import Path
 import requests
-from PyQt5.QtCore import QThread, pyqtSignal
-import time
-from pynput import keyboard
-import translators as ts
 from database import save_to_dict, find_translation
 
 audio_file_path = 'audio/'
@@ -20,6 +16,7 @@ def book_vocabulary_count(book):
 def get_word_in_text_count(path):
     text = open_text_file(path)
     count = text.split(' ')
+
 
 def dictionary_updater(text):
     text = cut_bad_symbols(text)
@@ -67,8 +64,9 @@ def cut_bad_symbols(work_text, filters):
 
 
 def translate(word):
-    ouput = ts.google(word, from_language='en', to_language='uk')
-    return ouput
+    import translators as ts
+    output = ts.google(word, from_language='en', to_language='uk')
+    return output
 
 
 def current_word(current_position, text):

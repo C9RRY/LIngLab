@@ -60,7 +60,7 @@ class TimerThread(QThread):
                 self.lesson_stop()
                 self.mainwindow.keyboard_stop()
             self.send_to_lcd(self.seconds)
-            time.sleep(1/30)
+            time.sleep(1)
             self.seconds += 1
 
     def pause_thr(self):

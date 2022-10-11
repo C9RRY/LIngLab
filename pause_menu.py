@@ -53,7 +53,7 @@ class Ui_PauseMenu(object):
         self.label_printed.setText(_translate("PauseMenu", "Printed"))
         self.label_speed.setText(_translate("PauseMenu", "Speed"))
         self.label_errors.setText(_translate("PauseMenu", "Errors "))
-        self.label.setText(_translate("PauseMenu", "%"))
+        self.label.setText(_translate("PauseMenu", ""))
         self.label_2.setText(_translate("PauseMenu", "%"))
 
 

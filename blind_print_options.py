@@ -71,6 +71,7 @@ class Ui_BlindPrintSettings(object):
         self.pushButton.setStyleSheet("background-color: rgb(152, 106, 68);")
         self.pushButton.setObjectName("pushButton")
         self.lcdNumber = QtWidgets.QLCDNumber(self.centralwidget)
+        self.lcdNumber.setDigitCount(8)
         self.lcdNumber.setGeometry(QtCore.QRect(30, 380, 71, 31))
         self.lcdNumber.setObjectName("lcdNumber")
         self.label_3 = QtWidgets.QLabel(self.centralwidget)

@@ -56,11 +56,25 @@ def create_vocabulary():
     conn.commit()
 
 
+def create_print_sessions():
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+    cursor.execute("CREATE TABLE print_sessions( "
+                   "id INTEGER PRIMARY KEY, "
+                   "user_id INTEGER, "
+                   "write_time INTEGER, "
+                   "symbols_count INTEGER, "
+                   "errors_count INTEGER, "
+                   "FOREIGN KEY('user_id') REFERENCES 'users'('id'), "
+                   "FOREIGN KEY('word_id') REFERENCES 'dictionary'('id') ) ")
+    conn.commit()
+
 def create_all():
     try:
         create_user()
         create_dictionary()
         create_vocabulary()
+        create_print_sessions()
     except:
         pass
 
