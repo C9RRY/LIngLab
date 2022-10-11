@@ -88,6 +88,7 @@ class Ui_BlindPrintSettings(object):
         self.checkBox.setStyleSheet("color: rgb(246, 245, 244);")
         self.checkBox.setObjectName("checkBox")
         self.lcdNumber = QtWidgets.QLCDNumber(self.tab_2)
+        self.lcdNumber.setDigitCount(7)
         self.lcdNumber.setGeometry(QtCore.QRect(30, 380, 71, 31))
         self.lcdNumber.setObjectName("lcdNumber")
         self.toolButton = QtWidgets.QToolButton(self.tab_2,
