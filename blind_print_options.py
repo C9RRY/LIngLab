@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from database import update_user_info, check_current_user, get_print_sessions
+from database import update_user_info, check_current_user, get_print_sessions, delete_record
 
 
 class Ui_BlindPrintSettings(object):
@@ -33,12 +33,13 @@ class Ui_BlindPrintSettings(object):
         self.tableWidget.setGeometry(QtCore.QRect(35, 160, 266, 241))
         self.tableWidget.setStyleSheet("color: rgb(255, 255, 255);")
         self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(5)
+        self.tableWidget.setColumnCount(6)
         self.tableWidget.setColumnWidth(0, 85)
         self.tableWidget.setColumnWidth(1, 35)
         self.tableWidget.setColumnWidth(2, 55)
         self.tableWidget.setColumnWidth(3, 50)
         self.tableWidget.setColumnWidth(4, 20)
+        self.tableWidget.setColumnWidth(5, 20)
         self.tableWidget.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(0, item)
@@ -50,7 +51,10 @@ class Ui_BlindPrintSettings(object):
         self.tableWidget.setHorizontalHeaderItem(3, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(4, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(5, item)
         self.delete_pinned = QtWidgets.QPushButton(self.tab)
+        self.delete_pinned.clicked.connect(lambda: self.delete_record(BlindPrintSettings))
         self.delete_pinned.setGeometry(QtCore.QRect(247, 410, 81, 27))
         self.delete_pinned.setStyleSheet("background-color: rgb(152, 106, 68);")
         self.delete_pinned.setObjectName("delete_pinned")
@@ -147,8 +151,10 @@ class Ui_BlindPrintSettings(object):
         item.setText(_translate("BlindPrintSettings", "errors"))
         item = self.tableWidget.horizontalHeaderItem(3)
         item.setText(_translate("BlindPrintSettings", "time"))
+        item = self.tableWidget.horizontalHeaderItem(5)
+        item.setText(_translate("BlindPrintSettings", "id"))
         self.delete_pinned.setText(_translate("BlindPrintSettings", "Delete"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("BlindPrintSettings", "Tab 1"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("BlindPrintSettings", "Statistic"))
         self.radioButton.setText(_translate("BlindPrintSettings", "letter only"))
         self.push_button_translate_it.setText(_translate("BlindPrintSettings", "set current position"))
         self.checkBox.setText(_translate("BlindPrintSettings", "cut custom symbols"))
@@ -160,27 +166,35 @@ class Ui_BlindPrintSettings(object):
         self.label.setText(_translate("BlindPrintSettings", self.file_path))
         self.label_2.setText(_translate("BlindPrintSettings", " Download text file"))
         self.pushButton.setText(_translate("BlindPrintSettings", "Back"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("BlindPrintSettings", "Tab 2"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("BlindPrintSettings", "Options"))
         self.comboBox.setCurrentText(str(self.font_size))
         self.lcdNumber.display(self.current_position)
         self.insert_into()
 
     def insert_into(self):
-        words = get_print_sessions(self.user_id)
+        records = get_print_sessions(self.user_id)
         row = 0
-        self.tableWidget.setRowCount(len(words))
+        self.tableWidget.setRowCount(len(records))
 
-        for word in words:
+        for record in records:
             item = QtWidgets.QTableWidgetItem()
             item.setFlags(QtCore.Qt.ItemFlag.ItemIsUserCheckable | QtCore.Qt.ItemFlag.ItemIsEnabled)
             item.setCheckState(QtCore.Qt.CheckState.Unchecked)
 
-            self.tableWidget.setItem(row, 0, QtWidgets.QTableWidgetItem(word[2]))
-            self.tableWidget.setItem(row, 1, QtWidgets.QTableWidgetItem(word[4]))
-            self.tableWidget.setItem(row, 2, QtWidgets.QTableWidgetItem(word[6]))
-            self.tableWidget.setItem(row, 3, QtWidgets.QTableWidgetItem(word[3]))
+            self.tableWidget.setItem(row, 0, QtWidgets.QTableWidgetItem(record[2]))
+            self.tableWidget.setItem(row, 1, QtWidgets.QTableWidgetItem(record[4]))
+            self.tableWidget.setItem(row, 2, QtWidgets.QTableWidgetItem(record[6]))
+            self.tableWidget.setItem(row, 3, QtWidgets.QTableWidgetItem(record[3]))
             self.tableWidget.setItem(row, 4, item)
+            self.tableWidget.setItem(row, 5, QtWidgets.QTableWidgetItem(str(record[0])))
             row += 1
+
+    def delete_record(self, BlindPrint):
+        for row in range(self.tableWidget.rowCount()):
+            if self.tableWidget.item(row, 4).checkState() == QtCore.Qt.CheckState.Checked:
+                delete_record(self.tableWidget.item(row, 5).text(), self.user_id)
+        self.insert_into()
+        self.retranslateUi(BlindPrint)
 
     def set_current_position(self, BlindPrintSettings):
         if self.lineEdit_3.text():

@@ -41,10 +41,11 @@ class Ui_BlindPrint(object):
         self.correct_print_count = 0
         self.print_errors = 0
         self.current_lesson_time = 0
+        self.format_lesson_time = '00:00'
         self.pause_status = False
 
         BlindPrint.setObjectName("BlindPrint")
-        BlindPrint.resize(838, 523)
+        BlindPrint.resize(900, 523)
         BlindPrint.setStyleSheet("background-color: rgb(102, 111, 108);")
         self.centralwidget = QtWidgets.QWidget(BlindPrint)
         self.centralwidget.setObjectName("centralwidget")
@@ -204,11 +205,10 @@ class Ui_BlindPrint(object):
         _translate = QtCore.QCoreApplication.translate
         BlindPrint.setWindowTitle(_translate("BlindPrint", "MyLearn"))
         self.push_button_back.setText(_translate("BlindPrint", "Back"))
-        self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - 25: self.current_position]))
+        self.label.setText(_translate("BlindPrint", ''))
         self.label.setFont(QtGui.QFont(self.font, self.font_size))
-        self.label_2.setText(_translate("BlindPrint", self.print_text[self.current_position: self.current_position + 35]))
+        self.label_2.setText(_translate("BlindPrint", 'Start'))
         self.label_2.setFont(QtGui.QFont(self.font, self.font_size))
-        self.label.setText(_translate("BlindPrint", ""))
         self.tool_button.setText(_translate("BlindPrint", "..."))
         self.push_button_pronounce.setText(_translate("BlindPrint", "Pronounce"))
         self.profileOpenButton.setText(_translate("BlindPrint", "Profile"))
@@ -218,6 +218,11 @@ class Ui_BlindPrint(object):
         self.pushButton_stop_lesson.setText(_translate("BlindPrint", "Stop"))
 
     def lesson_start(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - 25: self.current_position]))
+        self.label.setFont(QtGui.QFont(self.font, self.font_size))
+        self.label_2.setText(_translate("BlindPrint", self.print_text[self.current_position: self.current_position + 35]))
+        self.label_2.setFont(QtGui.QFont(self.font, self.font_size))
         self.keyboard_thread.start()
         self.keyboard_thread.pause_off()
         self.time_thread.pause_off(self.comboBox.currentText())
@@ -232,11 +237,16 @@ class Ui_BlindPrint(object):
         self.time_thread.pause_thr()
         update_user_info('current_position', self.current_position, self.user_id)
 
+
     def post_stop(self):
-        save_to_print_session(self.user_id, self.current_lesson_time, self.format_lesson_time, self.correct_print_count, self.print_errors)
+        save_to_print_session(self.user_id, self.current_lesson_time, self.correct_print_count,
+                              self.print_errors, self.format_lesson_time)
         self.correct_print_count = 0
         self.print_errors = 0
         self.keyboard_thread.pause_thr()
+        self.label.setText('Start')
+        self.label_2.setText('')
+
 
     def keyboard_stop(self):
         self.keyboard_thread.pause_thr()

@@ -5,7 +5,7 @@ from datetime import date
 database_path = 'ling_lab.sqlite3'
 
 
-def save_to_print_session(user_id, time, format_time, count, error):
+def save_to_print_session(user_id, time,  count, error, format_time):
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
     error_percent = (str(error / (error + count) * 100)[:4] if error + count != 0 else '0') + '%'
@@ -14,6 +14,15 @@ def save_to_print_session(user_id, time, format_time, count, error):
     current_date = current_date.strftime("%d/%m/%Y")
     cursor.execute(f"INSERT INTO print_sessions(user_id, date, write_time, write_speed, symbols_count, errors_count) "
                    f"VALUES ({user_id}, '{current_date}', '{format_time}', '{speed}', {count}, '{error_percent}')")
+    conn.commit()
+
+
+def delete_record(record_id, user):
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+
+    cursor.execute(f"DELETE FROM print_sessions "
+                   f"WHERE user_id = {user} and id = {record_id}")
     conn.commit()
 
 
