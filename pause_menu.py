@@ -9,7 +9,7 @@ class Ui_PauseMenu(object):
         self.centralwidget = QtWidgets.QWidget(PauseMenu)
         self.centralwidget.setObjectName("centralwidget")
         self.lcdNumber = QtWidgets.QLCDNumber(self.centralwidget)
-        self.lcdNumber.display(str(error / (error + count) * 100)[:4] if error != 0 else '0')
+        self.lcdNumber.display(str(error / (error + count) * 100)[:4] if error + count != 0 else '0')
         self.lcdNumber.setGeometry(QtCore.QRect(140, 90, 61, 23))
         self.lcdNumber.setObjectName("lcdNumber")
         self.lcdNumber_2 = QtWidgets.QLCDNumber(self.centralwidget)

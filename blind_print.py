@@ -3,7 +3,7 @@ from new_thread import KeyboardThread, TimerThread
 from utils import open_text_file, current_word, get_and_play_audio, leave_good_symbols, cut_bad_symbols
 from blind_print_options import Ui_BlindPrintSettings
 from pause_menu import Ui_PauseMenu
-from database import update_user_info
+from database import update_user_info, save_to_print_session
 
 
 class Ui_BlindPrint(object):
@@ -233,6 +233,7 @@ class Ui_BlindPrint(object):
         update_user_info('current_position', self.current_position, self.user_id)
 
     def post_stop(self):
+        save_to_print_session(self.user_id, self.current_lesson_time, self.format_lesson_time, self.correct_print_count, self.print_errors)
         self.correct_print_count = 0
         self.print_errors = 0
         self.keyboard_thread.pause_thr()

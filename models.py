@@ -62,12 +62,14 @@ def create_print_sessions():
     cursor.execute("CREATE TABLE print_sessions( "
                    "id INTEGER PRIMARY KEY, "
                    "user_id INTEGER, "
+                   "date VARCHAR(10), "
                    "write_time INTEGER, "
+                   "write_speed VARCHAR(19), "
                    "symbols_count INTEGER, "
                    "errors_count INTEGER, "
-                   "FOREIGN KEY('user_id') REFERENCES 'users'('id'), "
-                   "FOREIGN KEY('word_id') REFERENCES 'dictionary'('id') ) ")
+                   "FOREIGN KEY('user_id') REFERENCES 'users'('id') ) ")
     conn.commit()
+
 
 def create_all():
     try:

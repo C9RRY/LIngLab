@@ -1,7 +1,29 @@
 import sqlite3
+from datetime import date
 
 
 database_path = 'ling_lab.sqlite3'
+
+
+def save_to_print_session(user_id, time, format_time, count, error):
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+    error_percent = (str(error / (error + count) * 100)[:4] if error + count != 0 else '0') + '%'
+    speed = str(count / time * 60)[:3] if time != 0 else "0"
+    current_date = date.today()
+    current_date = current_date.strftime("%d/%m/%Y")
+    cursor.execute(f"INSERT INTO print_sessions(user_id, date, write_time, write_speed, symbols_count, errors_count) "
+                   f"VALUES ({user_id}, '{current_date}', '{format_time}', '{speed}', {count}, '{error_percent}')")
+    conn.commit()
+
+
+def get_print_sessions(user_id):
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+    result = cursor.execute(f"SELECT * FROM print_sessions "
+                            f"WHERE user_id = '{user_id}'")
+    user_info = [rows for rows in result]
+    return user_info
 
 
 def get_user_list():
