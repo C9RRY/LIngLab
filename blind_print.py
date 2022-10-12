@@ -196,7 +196,7 @@ class Ui_BlindPrint(object):
         self.verticalSlider.valueChanged.connect(self.slider_check)
         self.verticalSlider.setStyleSheet("selection-background-color: rgb(181, 131, 90);")
         self.verticalSlider.setMaximum(30)
-        self.verticalSlider.setProperty("value", self.slider_count)
+        self.verticalSlider.setProperty("value", self.slider_count if self.slider_count <= 10 else 10 + (self.slider_count - 10) / 2)
         self.verticalSlider.setOrientation(QtCore.Qt.Vertical)
         self.verticalSlider.setObjectName("verticalSlider")
         self.gridLayout.addWidget(self.verticalSlider, 4, 4, 1, 1)
@@ -300,7 +300,6 @@ class Ui_BlindPrint(object):
         else:
             if value != '':
                 self.print_errors += 1
-        print(self.correct_print_count, self.print_errors)
         self.current_word = current_word(self.current_position, self.print_text)
 
     def get_text(self, path, BlindPrint, filters, custom_filters, current_position=None):
@@ -327,6 +326,8 @@ class Ui_BlindPrint(object):
         self.label_2.setFont(font)
 
     def slider_check(self, value):
+        if value > 10:
+            value = 10 + (value - 10) * 2
         if self.slider_count != value:
             self.lesson_start()
         self.slider_count = value

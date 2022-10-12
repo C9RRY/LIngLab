@@ -99,7 +99,6 @@ def open_text_file(file_path):
     try:
         with open(file_path) as work_text:
             text = work_text.read()
-            print("text extracted")
             return text
     except Exception as exc:
         return 'select text file in settings!'

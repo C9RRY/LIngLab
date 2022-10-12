@@ -127,7 +127,7 @@ class Ui_BlindPrintSettings(object):
             self.comboBox.addItem(str(font))
         for font in range(30, 50, 6):
             self.comboBox.addItem(str(font))
-        for font in range(50, 80, 12):
+        for font in range(50, 100, 20):
             self.comboBox.addItem(str(font))
         self.comboBox.setCurrentText(str(self.font_size))
         self.fontComboBox.setCurrentText(self.font)
