@@ -20,6 +20,7 @@ def create_user():
                    "custom_filter_is_enabled BOOLEAN DEFAULT FALSE, "
                    "font VARCHAR(100) DEFAULT 'Times', "
                    "font_size INTEGER DEFAULT 22, "
+                   "length_slider INTEGER DEFAULT 15, "
                    "password VARCHAR(50))")
 
     cursor.execute("INSERT INTO users (user_name, is_current, font, font_size) "

@@ -43,7 +43,7 @@ class Ui_BlindPrint(object):
         self.current_lesson_time = 0
         self.format_lesson_time = '00:00'
         self.pause_status = False
-        self.slider_count = 15
+        self.slider_count = user['length_slider']
         BlindPrint.setObjectName("BlindPrint")
         BlindPrint.resize(900, 523)
         BlindPrint.setStyleSheet("background-color: rgb(102, 111, 108);")
@@ -196,7 +196,7 @@ class Ui_BlindPrint(object):
         self.verticalSlider.valueChanged.connect(self.slider_check)
         self.verticalSlider.setStyleSheet("selection-background-color: rgb(181, 131, 90);")
         self.verticalSlider.setMaximum(30)
-        self.verticalSlider.setProperty("value", 15)
+        self.verticalSlider.setProperty("value", self.slider_count)
         self.verticalSlider.setOrientation(QtCore.Qt.Vertical)
         self.verticalSlider.setObjectName("verticalSlider")
         self.gridLayout.addWidget(self.verticalSlider, 4, 4, 1, 1)
@@ -237,7 +237,7 @@ class Ui_BlindPrint(object):
 
     def lesson_start(self):
         _translate = QtCore.QCoreApplication.translate
-        self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - (self.slider_count - 5): self.current_position]))
+        self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - (self.slider_count): self.current_position]))
         self.label.setFont(QtGui.QFont(self.font, self.font_size))
         self.label_2.setText(_translate("BlindPrint", self.print_text[self.current_position: self.current_position + (self.slider_count + 5)]))
         self.label_2.setFont(QtGui.QFont(self.font, self.font_size))
@@ -254,6 +254,7 @@ class Ui_BlindPrint(object):
         self.pause_status = True
         self.time_thread.pause_thr()
         update_user_info('current_position', self.current_position, self.user_id)
+        update_user_info('length_slider', self.slider_count, self.user_id)
 
     def post_stop(self):
         save_to_print_session(self.user_id, self.current_lesson_time, self.correct_print_count,
@@ -290,7 +291,7 @@ class Ui_BlindPrint(object):
         elif value == self.print_text[self.current_position]:
             self.correct_print_count += 1
             if self.current_position > 30:
-                self.label.setText(self.print_text[self.current_position - (self.slider_count - 5): self.current_position + 1])
+                self.label.setText(self.print_text[self.current_position - (self.slider_count): self.current_position + 1])
                 self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + (self.slider_count + 5)])
             else:
                 self.label.setText(self.print_text[:self.current_position + 1])
