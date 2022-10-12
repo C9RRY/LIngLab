@@ -43,6 +43,7 @@ class Ui_BlindPrint(object):
         self.current_lesson_time = 0
         self.format_lesson_time = '00:00'
         self.pause_status = False
+        self.slider_count = 15
         BlindPrint.setObjectName("BlindPrint")
         BlindPrint.resize(900, 523)
         BlindPrint.setStyleSheet("background-color: rgb(102, 111, 108);")
@@ -50,20 +51,22 @@ class Ui_BlindPrint(object):
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
-        spacerItem = QtWidgets.QSpacerItem(15, 100, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.MinimumExpanding)
-        self.gridLayout.addItem(spacerItem, 4, 10, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem1, 4, 12, 1, 1)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem2, 12, 10, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem, 4, 13, 1, 1)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem1, 13, 7, 1, 1)
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(18)
+        font.setItalic(True)
+        self.label_2.setFont(font)
+        self.label_2.setStyleSheet("background-color: rgb(218, 188, 154);")
+        self.label_2.setObjectName("label_2")
+        self.gridLayout.addWidget(self.label_2, 9, 9, 1, 5)
+        spacerItem2 = QtWidgets.QSpacerItem(150, 20, QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem2, 13, 5, 1, 1)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem3, 12, 7, 1, 1)
-        self.push_button_back = QtWidgets.QPushButton(self.centralwidget,
-                                                  clicked=lambda: self.show_main(MainWindow, BlindPrint))
-        self.push_button_back.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.push_button_back.setStyleSheet("background-color: rgb(134, 94, 60);")
-        self.push_button_back.setObjectName("push_button_back")
-        self.gridLayout.addWidget(self.push_button_back, 14, 12, 1, 1)
+        self.gridLayout.addItem(spacerItem3, 13, 9, 1, 1)
         self.label_current_word = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -73,22 +76,6 @@ class Ui_BlindPrint(object):
         self.label_current_word.setAlignment(QtCore.Qt.AlignCenter)
         self.label_current_word.setObjectName("label_current_word")
         self.gridLayout.addWidget(self.label_current_word, 1, 7, 1, 1)
-        spacerItem4 = QtWidgets.QSpacerItem(5, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem4, 12, 8, 1, 1)
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        font = QtGui.QFont()
-        font.setPointSize(18)
-        font.setItalic(True)
-        self.label_2.setFont(font)
-        self.label_2.setStyleSheet("background-color: rgb(218, 188, 154);")
-        self.label_2.setObjectName("label_2")
-        self.gridLayout.addWidget(self.label_2, 9, 9, 1, 4)
-        spacerItem5 = QtWidgets.QSpacerItem(25, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem5, 12, 12, 1, 1)
-        spacerItem6 = QtWidgets.QSpacerItem(150, 20, QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem6, 12, 5, 1, 1)
-        spacerItem7 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem7, 10, 12, 1, 1)
         self.label = QtWidgets.QLabel(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -106,11 +93,24 @@ class Ui_BlindPrint(object):
         self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 9, 0, 1, 9)
+        spacerItem4 = QtWidgets.QSpacerItem(25, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem4, 13, 13, 1, 1)
+        self.verticalWidget = QtWidgets.QWidget(self.centralwidget)
+        self.verticalWidget.setObjectName("verticalWidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalWidget)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.gridLayout.addWidget(self.verticalWidget, 14, 9, 1, 1)
+        self.pushButton_stop_lesson = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_stop_lesson.clicked.connect(self.lesson_stop)
+        self.pushButton_stop_lesson.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.pushButton_stop_lesson.setStyleSheet("background-color: rgb(152, 106, 68);")
+        self.pushButton_stop_lesson.setObjectName("pushButton_stop_lesson")
+        self.gridLayout.addWidget(self.pushButton_stop_lesson, 15, 10, 1, 1)
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setContentsMargins(-1, 1, -1, -1)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem8, 2, 12, 1, 1)
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_2.addItem(spacerItem5, 2, 12, 1, 1)
         self.lcdNumber_2 = QtWidgets.QLCDNumber(self.centralwidget)
         self.lcdNumber_2.setMinimumSize(QtCore.QSize(50, 50))
         self.lcdNumber_2.setStyleSheet("background-color: rgb(71, 94, 87);\n"
@@ -124,10 +124,10 @@ class Ui_BlindPrint(object):
         self.tool_button.setStyleSheet("background-color: rgb(134, 94, 60);")
         self.tool_button.setObjectName("tool_button")
         self.gridLayout_2.addWidget(self.tool_button, 2, 13, 1, 1)
-        spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem9, 2, 8, 1, 1)
-        spacerItem10 = QtWidgets.QSpacerItem(20, 58, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem10, 2, 0, 1, 2)
+        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_2.addItem(spacerItem6, 2, 8, 1, 1)
+        spacerItem7 = QtWidgets.QSpacerItem(20, 58, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_2.addItem(spacerItem7, 2, 0, 1, 2)
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
@@ -158,8 +158,8 @@ class Ui_BlindPrint(object):
         self.profileOpenButton.setStyleSheet("background-color: rgb(134, 94, 60);")
         self.profileOpenButton.setObjectName("profileOpenButton")
         self.gridLayout_2.addWidget(self.profileOpenButton, 2, 14, 1, 1)
-        spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem11, 2, 7, 1, 1)
+        spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_2.addItem(spacerItem8, 2, 7, 1, 1)
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.pushButton.setStyleSheet("background-color: rgb(181, 131, 90);")
@@ -170,32 +170,43 @@ class Ui_BlindPrint(object):
         self.pushButton_2.setStyleSheet("background-color: rgb(134, 94, 60);")
         self.pushButton_2.setObjectName("pushButton_2")
         self.gridLayout_2.addWidget(self.pushButton_2, 2, 6, 1, 1)
-        self.gridLayout.addLayout(self.gridLayout_2, 0, 2, 1, 11)
-        spacerItem12 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem12, 12, 9, 1, 1)
-        self.verticalWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalWidget.setObjectName("verticalWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalWidget)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.gridLayout.addWidget(self.verticalWidget, 13, 9, 1, 1)
+        self.gridLayout.addLayout(self.gridLayout_2, 0, 2, 1, 12)
+        spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem9, 13, 10, 1, 1)
+        spacerItem10 = QtWidgets.QSpacerItem(5, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem10, 13, 8, 1, 1)
+        self.push_button_back = QtWidgets.QPushButton(self.centralwidget,
+                                                      clicked=lambda: self.show_main(MainWindow, BlindPrint))
+        self.push_button_back.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.push_button_back.setStyleSheet("background-color: rgb(134, 94, 60);")
+        self.push_button_back.setObjectName("push_button_back")
+        self.gridLayout.addWidget(self.push_button_back, 15, 13, 1, 1)
         self.pushButton_start_lesson = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_start_lesson.clicked.connect(self.lesson_start)
         self.pushButton_start_lesson.setFocusPolicy(QtCore.Qt.NoFocus)
         self.pushButton_start_lesson.setStyleSheet("background-color: rgb(181, 131, 90);")
         self.pushButton_start_lesson.setObjectName("pushButton_start_lesson")
-        self.gridLayout.addWidget(self.pushButton_start_lesson, 14, 9, 1, 1)
-        self.pushButton_stop_lesson = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_stop_lesson.clicked.connect(self.lesson_stop)
-        self.pushButton_stop_lesson.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.pushButton_stop_lesson.setStyleSheet("background-color: rgb(152, 106, 68);")
-        self.pushButton_stop_lesson.setObjectName("pushButton_stop_lesson")
-        self.gridLayout.addWidget(self.pushButton_stop_lesson, 14, 10, 1, 1)
+        self.gridLayout.addWidget(self.pushButton_start_lesson, 15, 9, 1, 1)
+        spacerItem11 = QtWidgets.QSpacerItem(15, 100, QtWidgets.QSizePolicy.Minimum,
+                                             QtWidgets.QSizePolicy.MinimumExpanding)
+        self.gridLayout.addItem(spacerItem11, 4, 10, 1, 1)
+        spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem12, 11, 10, 1, 1)
+        self.verticalSlider = QtWidgets.QSlider(self.centralwidget)
+        self.verticalSlider.valueChanged.connect(self.slider_check)
+        self.verticalSlider.setStyleSheet("selection-background-color: rgb(181, 131, 90);")
+        self.verticalSlider.setMaximum(30)
+        self.verticalSlider.setProperty("value", 15)
+        self.verticalSlider.setOrientation(QtCore.Qt.Vertical)
+        self.verticalSlider.setObjectName("verticalSlider")
+        self.gridLayout.addWidget(self.verticalSlider, 4, 4, 1, 1)
         BlindPrint.setCentralWidget(self.centralwidget)
 
         for minutes in range(5, 31, 5):
             self.comboBox.addItem(str(minutes))
         self.comboBox.setCurrentText(str(self.lesson_time))
         self.time_thread = TimerThread(mainwindow=self)
+        self.retranslateUi(BlindPrint)
         QtCore.QMetaObject.connectSlotsByName(BlindPrint)
         self.keyboard_thread = KeyboardThread(mainwindow=self)
         self.get_text(self.file_path, BlindPrint, self.text_filter, self.custom_filters)
@@ -203,18 +214,19 @@ class Ui_BlindPrint(object):
     def retranslateUi(self, BlindPrint):
         _translate = QtCore.QCoreApplication.translate
         BlindPrint.setWindowTitle(_translate("BlindPrint", "MyLearn"))
-        self.push_button_back.setText(_translate("BlindPrint", "Back"))
-        self.label.setText(_translate("BlindPrint", ''))
-        self.label.setFont(QtGui.QFont(self.font, self.font_size))
         self.label_2.setText(_translate("BlindPrint", 'Start'))
         self.label_2.setFont(QtGui.QFont(self.font, self.font_size))
+        self.label_current_word.setText(_translate("BlindPrint", "Current"))
+        self.label.setText(_translate("BlindPrint", ''))
+        self.label.setFont(QtGui.QFont(self.font, self.font_size))
+        self.pushButton_stop_lesson.setText(_translate("BlindPrint", "Stop"))
         self.tool_button.setText(_translate("BlindPrint", "..."))
         self.push_button_pronounce.setText(_translate("BlindPrint", "Pronounce"))
         self.profileOpenButton.setText(_translate("BlindPrint", "Profile"))
         self.pushButton.setText(_translate("BlindPrint", "Add to vocab"))
         self.pushButton_2.setText(_translate("BlindPrint", "Translate"))
+        self.push_button_back.setText(_translate("BlindPrint", "Back"))
         self.pushButton_start_lesson.setText(_translate("BlindPrint", "Start"))
-        self.pushButton_stop_lesson.setText(_translate("BlindPrint", "Stop"))
 
     def update_user(self):
         user = check_current_user()
@@ -225,9 +237,9 @@ class Ui_BlindPrint(object):
 
     def lesson_start(self):
         _translate = QtCore.QCoreApplication.translate
-        self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - 25: self.current_position]))
+        self.label.setText(_translate("BlindPrint", self.print_text[self.current_position - (self.slider_count - 5): self.current_position]))
         self.label.setFont(QtGui.QFont(self.font, self.font_size))
-        self.label_2.setText(_translate("BlindPrint", self.print_text[self.current_position: self.current_position + 35]))
+        self.label_2.setText(_translate("BlindPrint", self.print_text[self.current_position: self.current_position + (self.slider_count + 5)]))
         self.label_2.setFont(QtGui.QFont(self.font, self.font_size))
         self.keyboard_thread.start()
         self.keyboard_thread.pause_off()
@@ -243,7 +255,6 @@ class Ui_BlindPrint(object):
         self.time_thread.pause_thr()
         update_user_info('current_position', self.current_position, self.user_id)
 
-
     def post_stop(self):
         save_to_print_session(self.user_id, self.current_lesson_time, self.correct_print_count,
                               self.print_errors, self.format_lesson_time)
@@ -252,7 +263,6 @@ class Ui_BlindPrint(object):
         self.keyboard_thread.pause_thr()
         self.label.setText('Start')
         self.label_2.setText('')
-
 
     def keyboard_stop(self):
         self.keyboard_thread.pause_thr()
@@ -280,11 +290,11 @@ class Ui_BlindPrint(object):
         elif value == self.print_text[self.current_position]:
             self.correct_print_count += 1
             if self.current_position > 30:
-                self.label.setText(self.print_text[self.current_position - 23: self.current_position + 1])
-                self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + 35])
+                self.label.setText(self.print_text[self.current_position - (self.slider_count - 5): self.current_position + 1])
+                self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + (self.slider_count + 5)])
             else:
                 self.label.setText(self.print_text[:self.current_position + 1])
-                self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + 35])
+                self.label_2.setText(self.print_text[self.current_position + 1: self.current_position + (self.slider_count + 5)])
             self.current_position += 1
         else:
             if value != '':
@@ -308,13 +318,17 @@ class Ui_BlindPrint(object):
             update_user_info('custom_filter_is_enabled', 0, self.user_id)
         self.retranslateUi(BlindPrint)
 
-
     def pronounce(self):
         get_and_play_audio(self.current_word)
 
     def font_change(self, font):
         self.label.setFont(font)
         self.label_2.setFont(font)
+
+    def slider_check(self, value):
+        if self.slider_count != value:
+            self.lesson_start()
+        self.slider_count = value
 
 
 if __name__ == "__main__":
